@@ -77,32 +77,32 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 with tab_chat:
-if len(st.session_state.messages) == 0:
-    st.info(f"👋 You're in **{mode}** mode. Ask me anything to get started.")
+    if len(st.session_state.messages) == 0:
+        st.info(f"👋 You're in **{mode}** mode. Ask me anything to get started.")
 
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        st.write(msg["content"])
+    for msg in st.session_state.messages:
+        with st.chat_message(msg["role"]):
+            st.write(msg["content"])
 
-user_input = st.chat_input("Ask something...")
-if user_input:
-    st.session_state.messages.append({"role": "user", "content": user_input})
-    with st.chat_message("user"):
-        st.write(user_input)
+    user_input = st.chat_input("Ask something...")
+    if user_input:
+        st.session_state.messages.append({"role": "user", "content": user_input})
+        with st.chat_message("user"):
+            st.write(user_input)
 
-    with st.chat_message("assistant"):
-        with st.spinner("Thinking..."):
-            try:
-                response = st.session_state.chat.send_message(user_input)
-                answer = response.text
-            except Exception as e:
-                if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
-                    answer = "⏳ SemiConnect is getting a lot of use right now and has hit its free-tier limit. Please try again in a few minutes, or come back tomorrow — thanks for your patience!"
-                else:
-                    answer = "⚠️ Something went wrong on my end. Please try rephrasing your question or try again shortly."
-        st.write(answer)
+        with st.chat_message("assistant"):
+            with st.spinner("Thinking..."):
+                try:
+                    response = st.session_state.chat.send_message(user_input)
+                    answer = response.text
+                except Exception as e:
+                    if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
+                        answer = "⏳ SemiConnect is getting a lot of use right now and has hit its free-tier limit. Please try again in a few minutes, or come back tomorrow — thanks for your patience!"
+                    else:
+                        answer = "⚠️ Something went wrong on my end. Please try rephrasing your question or try again shortly."
+            st.write(answer)
 
-    st.session_state.messages.append({"role": "assistant", "content": answer})
+        st.session_state.messages.append({"role": "assistant", "content": answer})
 
 
 st.sidebar.divider()
