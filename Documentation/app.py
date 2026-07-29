@@ -42,7 +42,7 @@ with tab_about:
     """)
     st.link_button("View source on GitHub", "https://github.com/oswalrushab26/semiconnect-ai-agent")
 
-    
+
 st.sidebar.header("SemiConnect")
 st.sidebar.write("Built by Rushab Oswal")
 mode = st.sidebar.radio("Choose a mode:", ["Market Intelligence", "VLSI Tutor", "Business Ops"])
@@ -76,6 +76,7 @@ if "chat" not in st.session_state or st.session_state.get("mode") != mode:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+with tab_chat:
 if len(st.session_state.messages) == 0:
     st.info(f"👋 You're in **{mode}** mode. Ask me anything to get started.")
 
