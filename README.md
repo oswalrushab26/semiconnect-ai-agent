@@ -39,9 +39,16 @@ one tool.
 ## Setup
 
 1. Clone the repo
-2. `pip install google-genai ddgs python-dotenv`
+2. pip install -r requirements.txt
 3. Create a `.env` file with `GEMINI_API_KEY=your_key_here`
 4. Run `agent_test.py`
+
+## Web Interface
+
+Run the Streamlit interface for a proper chat UI instead of the terminal:
+```
+py -m streamlit run app.py
+```
 
 ## Author
 
