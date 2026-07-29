@@ -11,14 +11,16 @@ load_dotenv()
 if "GEMINI_API_KEY" not in os.environ and "GEMINI_API_KEY" in st.secrets:
     os.environ["GEMINI_API_KEY"] = st.secrets["GEMINI_API_KEY"]
 
+_search_cache = {}
+
 def web_search(query: str) -> str:
     """Searches the web and returns a summary of top results."""
+    if query in _search_cache:
+        return _search_cache[query]
     results = DDGS().text(query, max_results=5)
-    return "\n\n".join([f"{r['title']}: {r['body']}" for r in results])
-
-@st.cache_data(ttl=3600, show_spinner=False)
-def cached_search(query: str) -> str:
-    return web_search(query)
+    combined = "\n\n".join([f"{r['title']}: {r['body']}" for r in results])
+    _search_cache[query] = combined
+    return combined
 
 st.set_page_config(page_title="SemiConnect", page_icon="🔌", layout="centered")
 
@@ -49,7 +51,7 @@ if "chat" not in st.session_state or st.session_state.get("mode") != mode:
         model="gemini-flash-latest",
         config=types.GenerateContentConfig(
             system_instruction=prompts[mode],
-            tools=[cached_search]
+            tools=[web_search]
         )
     )
     st.session_state.mode = mode
@@ -77,7 +79,6 @@ if user_input:
                 response = st.session_state.chat.send_message(user_input)
                 answer = response.text
             except Exception as e:
-                st.error(f"DEBUG: {e}")
                 if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
                     answer = "⏳ SemiConnect is getting a lot of use right now and has hit its free-tier limit. Please try again in a few minutes, or come back tomorrow — thanks for your patience!"
                 else:
