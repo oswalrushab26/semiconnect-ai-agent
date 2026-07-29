@@ -79,6 +79,16 @@ if "messages" not in st.session_state:
 with tab_chat:
     if len(st.session_state.messages) == 0:
         st.info(f"👋 You're in **{mode}** mode. Ask me anything to get started.")
+        examples = {
+    "Market Intelligence": ["Latest news on Tata Electronics", "What's happening with Kaynes Semicon?", "Recent OSAT investments in India"],
+    "VLSI Tutor": ["Explain what a flip-flop is", "What's the difference between combinational and sequential logic?", "Teach me Verilog basics"],
+    "Business Ops": ["OSAT India vs Taiwan comparison", "How to evaluate a vendor's reliability?", "Key risks in semiconductor supply chains"]
+}
+st.write("Try asking:")
+cols = st.columns(len(examples[mode]))
+for col, ex in zip(cols, examples[mode]):
+    if col.button(ex, use_container_width=True):
+        st.session_state.pending_input = ex
 
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
