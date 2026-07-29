@@ -95,5 +95,10 @@ if st.sidebar.button("🔄 Clear conversation"):
     st.rerun()
 
 st.sidebar.divider()
+st.sidebar.subheader("💬 Feedback")
+st.sidebar.write("Help shape what SemiConnect becomes next:")
+st.sidebar.link_button("Share your feedback", "https://docs.google.com/forms/d/e/1FAIpQLSdsaegorN8MwUMLLjgehV7ddzwr5oTGIK6xH3BauSvz3bSGww/viewform?usp=publish-editor")
+
+st.sidebar.divider()
 st.sidebar.caption("Built with Python, Gemini API & DuckDuckGo search — 100% free tools")
 st.sidebar.caption("[GitHub](https://github.com/oswalrushab26/semiconnect-ai-agent)")
