@@ -66,10 +66,21 @@ if user_input:
     st.session_state.messages.append({"role": "user", "content": user_input})
     with st.chat_message("user"):
         st.write(user_input)
-    response = st.session_state.chat.send_message(user_input)
-    st.session_state.messages.append({"role": "assistant", "content": response.text})
+
     with st.chat_message("assistant"):
-        st.write(response.text)
+        with st.spinner("Thinking..."):
+            try:
+                response = st.session_state.chat.send_message(user_input)
+                answer = response.text
+            except Exception as e:
+                if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
+                    answer = "⏳ SemiConnect is getting a lot of use right now and has hit its free-tier limit. Please try again in a few minutes, or come back tomorrow — thanks for your patience!"
+                else:
+                    answer = "⚠️ Something went wrong on my end. Please try rephrasing your question or try again shortly."
+        st.write(answer)
+
+    st.session_state.messages.append({"role": "assistant", "content": answer})
+    
 
         st.sidebar.divider()
 if st.sidebar.button("🔄 Clear conversation"):
