@@ -27,6 +27,22 @@ st.set_page_config(page_title="SemiConnect", page_icon="🔌", layout="centered"
 st.title("🔌 SemiConnect")
 st.caption("AI agent for the semiconductor industry — Market Intelligence · VLSI Tutor · Business Ops")
 
+tab_chat, tab_about = st.tabs(["💬 Chat", "ℹ️ About"])
+
+with tab_about:
+    st.subheader("What is SemiConnect?")
+    st.write("""
+    SemiConnect is an AI agent built for the semiconductor industry, with three specialist modes:
+    
+    - **Market Intelligence** — live news on OSAT, fab investments, and supply chain shifts
+    - **VLSI Tutor** — step-by-step teaching of Verilog and digital electronics
+    - **Business Ops** — vendor, sourcing, and supply chain strategy analysis
+    
+    Built by Rushab Oswal using free tools: Python, Gemini API, and DuckDuckGo search.
+    """)
+    st.link_button("View source on GitHub", "https://github.com/oswalrushab26/semiconnect-ai-agent")
+
+    
 st.sidebar.header("SemiConnect")
 st.sidebar.write("Built by Rushab Oswal")
 mode = st.sidebar.radio("Choose a mode:", ["Market Intelligence", "VLSI Tutor", "Business Ops"])
