@@ -1,3 +1,5 @@
+🔗 **Live demo:** https://semiconnect-ai-agent-ffgcjcy8kgxjhu9aqfhxei.streamlit.app/
+
 # SemiConnect — Semiconductor Industry AI Agent
 
 An AI agent built for the semiconductor industry, combining live market intelligence, 
