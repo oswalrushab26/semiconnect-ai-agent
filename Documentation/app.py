@@ -1,3 +1,4 @@
+import git
 import streamlit as st
 from google import genai
 from google.genai import types
@@ -7,6 +8,8 @@ import os
 from prompts import MARKET_INTEL_PROMPT, VLSI_TUTOR_PROMPT, BUSINESS_OPS_PROMPT
 
 load_dotenv()
+if "GEMINI_API_KEY" not in os.environ and "GEMINI_API_KEY" in st.secrets:
+    os.environ["GEMINI_API_KEY"] = st.secrets["GEMINI_API_KEY"]
 
 def web_search(query: str) -> str:
     """Searches the web and returns a summary of top results."""
