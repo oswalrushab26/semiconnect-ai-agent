@@ -77,6 +77,7 @@ if user_input:
                 response = st.session_state.chat.send_message(user_input)
                 answer = response.text
             except Exception as e:
+                st.error(f"DEBUG: {e}")
                 if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
                     answer = "⏳ SemiConnect is getting a lot of use right now and has hit its free-tier limit. Please try again in a few minutes, or come back tomorrow — thanks for your patience!"
                 else:
