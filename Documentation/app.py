@@ -16,6 +16,10 @@ def web_search(query: str) -> str:
     results = DDGS().text(query, max_results=5)
     return "\n\n".join([f"{r['title']}: {r['body']}" for r in results])
 
+@st.cache_data(ttl=3600, show_spinner=False)
+def cached_search(query: str) -> str:
+    return web_search(query)
+
 st.set_page_config(page_title="SemiConnect", page_icon="🔌", layout="centered")
 
 st.title("🔌 SemiConnect")
@@ -45,7 +49,7 @@ if "chat" not in st.session_state or st.session_state.get("mode") != mode:
         model="gemini-flash-latest",
         config=types.GenerateContentConfig(
             system_instruction=prompts[mode],
-            tools=[web_search]
+            tools=[cached_search]
         )
     )
     st.session_state.mode = mode
