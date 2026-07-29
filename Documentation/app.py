@@ -80,9 +80,9 @@ if user_input:
         st.write(answer)
 
     st.session_state.messages.append({"role": "assistant", "content": answer})
-    
 
-        st.sidebar.divider()
+
+st.sidebar.divider()
 if st.sidebar.button("🔄 Clear conversation"):
     st.session_state.messages = []
     st.session_state.pop("chat", None)
