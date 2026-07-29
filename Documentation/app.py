@@ -79,6 +79,28 @@ with tab_chat:
     if len(st.session_state.messages) == 0:
         st.info(f"👋 You're in **{mode}** mode. Ask me anything to get started.")
         
+        examples = {
+            "Market Intelligence": ["Latest news on Tata Electronics", "What's happening with Kaynes Semicon?", "Recent OSAT investments in India"],
+            "VLSI Tutor": ["Explain what a flip-flop is", "Difference between combinational and sequential logic", "Teach me Verilog basics"],
+            "Business Ops": ["OSAT India vs Taiwan comparison", "How to evaluate a vendor's reliability?", "Key risks in semiconductor supply chains"]
+        }
+        st.write("Try asking:")
+        cols = st.columns(len(examples[mode]))
+        for col, ex in zip(cols, examples[mode]):
+            if col.button(ex, use_container_width=True):
+                st.session_state.messages.append({"role": "user", "content": ex})
+                with st.spinner("Thinking..."):
+                    try:
+                        response = st.session_state.chat.send_message(ex)
+                        answer = response.text
+                    except Exception as e:
+                        if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
+                            answer = "⏳ SemiConnect is getting a lot of use right now. Please try again shortly."
+                        else:
+                            answer = "⚠️ Something went wrong. Please try again."
+                st.session_state.messages.append({"role": "assistant", "content": answer})
+                st.rerun()
+        
 
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
