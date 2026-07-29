@@ -78,7 +78,7 @@ if "messages" not in st.session_state:
 with tab_chat:
     if len(st.session_state.messages) == 0:
         st.info(f"👋 You're in **{mode}** mode. Ask me anything to get started.")
-        
+
         examples = {
             "Market Intelligence": ["Latest news on Tata Electronics", "What's happening with Kaynes Semicon?", "Recent OSAT investments in India"],
             "VLSI Tutor": ["Explain what a flip-flop is", "Difference between combinational and sequential logic", "Teach me Verilog basics"],
@@ -100,20 +100,19 @@ with tab_chat:
                             answer = "⚠️ Something went wrong. Please try again."
                 st.session_state.messages.append({"role": "assistant", "content": answer})
                 st.rerun()
-        
 
     avatars = {"user": "🧑", "assistant": "🔌"}
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"], avatar=avatars[msg["role"]]):
-        st.write(msg["content"])
+    for msg in st.session_state.messages:
+        with st.chat_message(msg["role"], avatar=avatars[msg["role"]]):
+            st.write(msg["content"])
 
     user_input = st.chat_input("Ask something...")
     if user_input:
         st.session_state.messages.append({"role": "user", "content": user_input})
-        with st.chat_message("user"):
+        with st.chat_message("user", avatar=avatars["user"]):
             st.write(user_input)
 
-        with st.chat_message("assistant"):
+        with st.chat_message("assistant", avatar=avatars["assistant"]):
             with st.spinner("Thinking..."):
                 try:
                     response = st.session_state.chat.send_message(user_input)
