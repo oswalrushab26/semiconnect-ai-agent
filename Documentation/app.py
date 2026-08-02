@@ -31,11 +31,12 @@ tab_chat, tab_about = st.tabs(["💬 Chat", "ℹ️ About"])
 with tab_about:
     st.subheader("What is SemiConnect?")
     st.write("""
-    SemiConnect is an AI agent built for the semiconductor industry, with three specialist modes:
+    SemiConnect is an AI agent built for the semiconductor industry, with four specialist modes:
     
     - **Market Intelligence** — live news on OSAT, fab investments, and supply chain shifts
     - **VLSI Tutor** — step-by-step teaching of Verilog and digital electronics
     - **Business Ops** — vendor, sourcing, and supply chain strategy analysis
+    - **Learning Path** — guides complete beginners through semiconductor/VLSI fundamentals, step by step, with progress tracking
     
     Built by Rushab Oswal using free tools: Python, Gemini API, and DuckDuckGo search.
     """)

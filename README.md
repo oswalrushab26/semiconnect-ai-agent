@@ -16,6 +16,7 @@ SemiConnect operates in three specialist modes:
   breaking down topics with analogies and comprehension checks
 - **Business Ops** — analyzes vendors, sourcing decisions, and supply chain strategy 
   from a practical operations standpoint
+- **Learning Path** — guides complete beginners through semiconductor and VLSI fundamentals step by step, with a visible progress tracker, so newcomers with zero background can learn systematically
 
 ## How it works
 
