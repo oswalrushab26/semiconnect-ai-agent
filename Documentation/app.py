@@ -3,6 +3,7 @@ from google import genai
 from google.genai import types
 from dotenv import load_dotenv
 from ddgs import DDGS
+import pandas as pd
 import os
 from prompts import MARKET_INTEL_PROMPT, VLSI_TUTOR_PROMPT, BUSINESS_OPS_PROMPT, LEARNING_PATH_PROMPT
 
@@ -66,6 +67,23 @@ mode_descriptions = {
 
 st.sidebar.info(mode_descriptions[mode])
 
+uploaded_file = None
+if mode == "Business Ops":
+    st.sidebar.divider()
+    st.sidebar.subheader("📎 Analyze a file")
+    uploaded_file = st.sidebar.file_uploader("Upload vendor/supply data (CSV or Excel)", type=["csv", "xlsx"])
+
+    if uploaded_file is not None:
+        try:
+            if uploaded_file.name.endswith(".csv"):
+                df = pd.read_csv(uploaded_file)
+            else:
+                df = pd.read_excel(uploaded_file)
+            st.sidebar.success(f"Loaded {len(df)} rows")
+            st.session_state.file_summary = df.describe(include="all").to_string()
+            st.session_state.file_preview = df.head(10).to_string()
+        except Exception as e:
+            st.sidebar.error("Couldn't read that file. Try a CSV or Excel file.")
 if mode == "Learning Path":
     if "learning_progress" not in st.session_state:
         st.session_state.learning_progress = 0
