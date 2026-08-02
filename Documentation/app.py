@@ -4,7 +4,7 @@ from google.genai import types
 from dotenv import load_dotenv
 from ddgs import DDGS
 import os
-from prompts import MARKET_INTEL_PROMPT, VLSI_TUTOR_PROMPT, BUSINESS_OPS_PROMPT
+from prompts import MARKET_INTEL_PROMPT, VLSI_TUTOR_PROMPT, BUSINESS_OPS_PROMPT, LEARNING_PATH_PROMPT
 
 load_dotenv()
 if "GEMINI_API_KEY" not in os.environ and "GEMINI_API_KEY" in st.secrets:
@@ -44,20 +44,23 @@ with tab_about:
 
 st.sidebar.header("SemiConnect")
 st.sidebar.write("Built by Rushab Oswal")
-mode = st.sidebar.radio("Choose a mode:", ["Market Intelligence", "VLSI Tutor", "Business Ops"])
+mode = st.sidebar.radio("Choose a mode:", ["Market Intelligence", "VLSI Tutor", "Business Ops", "Learning Path"])
 st.sidebar.divider()
 
 mode_descriptions = {
     "Market Intelligence": "📊 Live OSAT, fab, and supply chain news",
     "VLSI Tutor": "📚 Step-by-step Verilog & digital electronics",
-    "Business Ops": "💼 Vendor, sourcing & supply chain analysis"
+    "Business Ops": "💼 Vendor, sourcing & supply chain analysis",
+    "Learning Path": "🎓 Zero to pro: guided semiconductor learning"
 }
+
 st.sidebar.info(mode_descriptions[mode])
 
 prompts = {
     "Market Intelligence": MARKET_INTEL_PROMPT,
     "VLSI Tutor": VLSI_TUTOR_PROMPT,
-    "Business Ops": BUSINESS_OPS_PROMPT
+    "Business Ops": BUSINESS_OPS_PROMPT,
+    "Learning Path": LEARNING_PATH_PROMPT
 }
 
 if "chat" not in st.session_state or st.session_state.get("mode") != mode:
@@ -83,6 +86,7 @@ with tab_chat:
             "Market Intelligence": ["Latest news on Tata Electronics", "What's happening with Kaynes Semicon?", "Recent OSAT investments in India"],
             "VLSI Tutor": ["Explain what a flip-flop is", "Difference between combinational and sequential logic", "Teach me Verilog basics"],
             "Business Ops": ["OSAT India vs Taiwan comparison", "How to evaluate a vendor's reliability?", "Key risks in semiconductor supply chains"]
+            "Learning Path": ["I'm a complete beginner, where do I start?", "What is a semiconductor?", "Guide me from basics to VLSI"]
         }
         st.write("Try asking:")
         cols = st.columns(len(examples[mode]))
