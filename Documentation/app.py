@@ -107,14 +107,25 @@ prompts = {
     "Learning Path": LEARNING_PATH_PROMPT
 }
 
-
-
 if "chat" not in st.session_state or st.session_state.get("mode") != mode:
     client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+    system_instruction = prompts[mode]
+    if mode == "Business Ops" and "file_summary" in st.session_state:
+        system_instruction += f"""
+
+The user has uploaded a data file. Here is a preview of the first 10 rows:
+{st.session_state.file_preview}
+
+Here are summary statistics for the file:
+{st.session_state.file_summary}
+
+When the user asks about this data, analyze it using the information above."""
+
     st.session_state.chat = client.chats.create(
         model="gemini-flash-latest",
         config=types.GenerateContentConfig(
-            system_instruction=prompts[mode],
+            system_instruction=system_instruction,
             tools=[web_search]
         )
     )
