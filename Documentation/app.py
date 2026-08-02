@@ -27,7 +27,7 @@ st.set_page_config(page_title="SemiConnect", page_icon="🔌", layout="centered"
 st.title("🔌 SemiConnect")
 st.caption("AI agent for the semiconductor industry — Market Intelligence · VLSI Tutor · Business Ops")
 
-tab_chat, tab_about = st.tabs(["💬 Chat", "ℹ️ About"])
+tab_chat, tab_tracker, tab_about = st.tabs(["💬 Chat", "📈 Tracker", "ℹ️ About"])
 
 with tab_about:
     st.subheader("What is SemiConnect?")
@@ -42,6 +42,37 @@ with tab_about:
     Built by Rushab Oswal using free tools: Python, Gemini API, and DuckDuckGo search.
     """)
     st.link_button("View source on GitHub", "https://github.com/oswalrushab26/semiconnect-ai-agent")
+
+    
+with tab_tracker:
+    st.subheader("📈 Supply Chain Watchlist")
+    st.write("Track specific companies and check for the latest news on demand.")
+
+    if "watchlist" not in st.session_state:
+        st.session_state.watchlist = []
+
+    new_company = st.text_input("Add a company to track (e.g. Tata Electronics, Kaynes Semicon)")
+    if st.button("➕ Add to watchlist"):
+        if new_company and new_company not in st.session_state.watchlist:
+            st.session_state.watchlist.append(new_company)
+            st.rerun()
+
+    st.divider()
+
+    for company in st.session_state.watchlist:
+        col1, col2, col3 = st.columns([3, 2, 1])
+        col1.write(f"**{company}**")
+        check = col2.button("🔍 Check latest", key=f"check_{company}")
+        remove = col3.button("🗑️", key=f"remove_{company}")
+
+        if check:
+            with st.spinner(f"Checking news for {company}..."):
+                result = web_search(f"{company} semiconductor news")
+            st.info(result)
+
+        if remove:
+            st.session_state.watchlist.remove(company)
+            st.rerun()
 
 
 st.sidebar.header("SemiConnect")
