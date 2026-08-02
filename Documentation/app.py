@@ -36,7 +36,7 @@ with tab_about:
     
     - **Market Intelligence** — live news on OSAT, fab investments, and supply chain shifts
     - **VLSI Tutor** — step-by-step teaching of Verilog and digital electronics
-    - **Business Ops** — vendor, sourcing, and supply chain strategy analysis
+    - **Business Ops** — vendor, sourcing, and supply chain strategy analysis, with support for uploading your own CSV/Excel data for direct analysis
     - **Learning Path** — guides complete beginners through semiconductor/VLSI fundamentals, step by step, with progress tracking
     
     Built by Rushab Oswal using free tools: Python, Gemini API, and DuckDuckGo search.
