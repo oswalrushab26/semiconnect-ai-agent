@@ -56,12 +56,38 @@ mode_descriptions = {
 
 st.sidebar.info(mode_descriptions[mode])
 
+if mode == "Learning Path":
+    if "learning_progress" not in st.session_state:
+        st.session_state.learning_progress = 0
+    st.sidebar.write("**Your progress:**")
+    for i, topic in enumerate(learning_topics):
+        if i < st.session_state.learning_progress:
+            st.sidebar.write(f"✅ {topic}")
+        elif i == st.session_state.learning_progress:
+            st.sidebar.write(f"👉 {topic}")
+        else:
+            st.sidebar.write(f"⬜ {topic}")
+    if st.sidebar.button("Mark current topic complete"):
+        st.session_state.learning_progress = min(st.session_state.learning_progress + 1, len(learning_topics))
+        st.rerun()
+        
+
 prompts = {
     "Market Intelligence": MARKET_INTEL_PROMPT,
     "VLSI Tutor": VLSI_TUTOR_PROMPT,
     "Business Ops": BUSINESS_OPS_PROMPT,
     "Learning Path": LEARNING_PATH_PROMPT
 }
+
+learning_topics = [
+    "What is a semiconductor?",
+    "Basic electronics: voltage, current, transistors",
+    "Digital logic: gates and boolean logic",
+    "Sequential logic: flip-flops and memory",
+    "Introduction to Verilog",
+    "Semiconductor industry overview: fab, OSAT, packaging"
+]
+
 
 if "chat" not in st.session_state or st.session_state.get("mode") != mode:
     client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
