@@ -85,7 +85,7 @@ with tab_chat:
         examples = {
             "Market Intelligence": ["Latest news on Tata Electronics", "What's happening with Kaynes Semicon?", "Recent OSAT investments in India"],
             "VLSI Tutor": ["Explain what a flip-flop is", "Difference between combinational and sequential logic", "Teach me Verilog basics"],
-            "Business Ops": ["OSAT India vs Taiwan comparison", "How to evaluate a vendor's reliability?", "Key risks in semiconductor supply chains"]
+            "Business Ops": ["OSAT India vs Taiwan comparison", "How to evaluate a vendor's reliability?", "Key risks in semiconductor supply chains"],
             "Learning Path": ["I'm a complete beginner, where do I start?", "What is a semiconductor?", "Guide me from basics to VLSI"]
         }
         st.write("Try asking:")
@@ -144,4 +144,4 @@ st.sidebar.link_button("Share your feedback", "https://docs.google.com/forms/d/e
 
 st.sidebar.divider()
 st.sidebar.caption("Built with Python, Gemini API & DuckDuckGo search — 100% free tools")
-st.sidebar.caption("[GitHub](https://github.com/oswalrushab26/semiconnect-ai-agent)")
+st.sidebar.caption("[GitHub](https://github.com/oswalrushab26/semiconnect-ai-agent)") 
