@@ -47,6 +47,15 @@ st.sidebar.write("Built by Rushab Oswal")
 mode = st.sidebar.radio("Choose a mode:", ["Market Intelligence", "VLSI Tutor", "Business Ops", "Learning Path"])
 st.sidebar.divider()
 
+learning_topics = [
+    "What is a semiconductor?",
+    "Basic electronics: voltage, current, transistors",
+    "Digital logic: gates and boolean logic",
+    "Sequential logic: flip-flops and memory",
+    "Introduction to Verilog",
+    "Semiconductor industry overview: fab, OSAT, packaging"
+]
+
 mode_descriptions = {
     "Market Intelligence": "📊 Live OSAT, fab, and supply chain news",
     "VLSI Tutor": "📚 Step-by-step Verilog & digital electronics",
@@ -70,7 +79,7 @@ if mode == "Learning Path":
     if st.sidebar.button("Mark current topic complete"):
         st.session_state.learning_progress = min(st.session_state.learning_progress + 1, len(learning_topics))
         st.rerun()
-        
+
 
 prompts = {
     "Market Intelligence": MARKET_INTEL_PROMPT,
@@ -79,14 +88,6 @@ prompts = {
     "Learning Path": LEARNING_PATH_PROMPT
 }
 
-learning_topics = [
-    "What is a semiconductor?",
-    "Basic electronics: voltage, current, transistors",
-    "Digital logic: gates and boolean logic",
-    "Sequential logic: flip-flops and memory",
-    "Introduction to Verilog",
-    "Semiconductor industry overview: fab, OSAT, packaging"
-]
 
 
 if "chat" not in st.session_state or st.session_state.get("mode") != mode:
