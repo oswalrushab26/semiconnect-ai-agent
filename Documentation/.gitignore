@@ -1,0 +1,29 @@
+# .gitignore
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.env
+data/*.db
+data/*.sqlite
+*.log
+.DS_Store
+.vscode/
+.idea/
+*.db
+*.sqlite
+# .gitignore
+.env
+*.env
+Documentation/.env
+data/*.db
+__pycache__/
+*.pyc
+.vscode/
+.idea/
