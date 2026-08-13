@@ -1,4 +1,3 @@
-# app.py
 import streamlit as st
 from google import genai
 from google.genai import types
@@ -6,357 +5,308 @@ from dotenv import load_dotenv
 from ddgs import DDGS
 import pandas as pd
 import os
-import hashlib
-from datetime import datetime
-
-# Import our modules
-from database.models import init_database, User, ChatHistory, Watchlist, Usage, get_db_connection
-from features.auth import AuthManager
-from features.analytics import AnalyticsDashboard
-from features.reporting import ReportGenerator
-from utils.rate_limiter import TieredRateLimiter
-from utils.cache import CacheManager
-from utils.security import SecurityManager
-from config import config
 from prompts import MARKET_INTEL_PROMPT, VLSI_TUTOR_PROMPT, BUSINESS_OPS_PROMPT, LEARNING_PATH_PROMPT
 
 load_dotenv()
+if "GEMINI_API_KEY" not in os.environ and "GEMINI_API_KEY" in st.secrets:
+    os.environ["GEMINI_API_KEY"] = st.secrets["GEMINI_API_KEY"]
 
-# Initialize
-auth_manager = AuthManager()
-analytics_dashboard = AnalyticsDashboard()
-report_generator = ReportGenerator()
-rate_limiter = TieredRateLimiter()
-cache_manager = CacheManager()
-security_manager = SecurityManager()
-init_database()
-
-# Page config
-st.set_page_config(
-    page_title="SemiConnect",
-    page_icon="🔌",
-    layout="wide"
-)
-
-# Custom CSS
-st.markdown("""
-<style>
-.metric-card {
-    background: white;
-    padding: 1rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    border-left: 4px solid #667eea;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# Initialize session state
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
-if "user_id" not in st.session_state:
-    st.session_state.user_id = None
-if "user_email" not in st.session_state:
-    st.session_state.user_email = None
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-if "mode" not in st.session_state:
-    st.session_state.mode = "Market Intelligence"
-if "watchlist" not in st.session_state:
-    st.session_state.watchlist = []
-
-# Cache for search
 _search_cache = {}
 
 def web_search(query: str) -> str:
-    cache_key = hashlib.md5(query.encode()).hexdigest()
-    if cache_key in _search_cache:
-        return _search_cache[cache_key]
-    
-    try:
-        results = DDGS().text(query, max_results=5)
-        combined = "\n\n".join([f"{r['title']}: {r['body']}" for r in results])
-        _search_cache[cache_key] = combined
-        return combined
-    except Exception as e:
-        return f"⚠️ Search error: {str(e)}"
+    """Searches the web and returns a summary of top results."""
+    if query in _search_cache:
+        return _search_cache[query]
+    results = DDGS().text(query, max_results=5)
+    combined = "\n\n".join([f"{r['title']}: {r['body']}" for r in results])
+    _search_cache[query] = combined
+    return combined
 
-# Authentication functions
-def login_form():
-    st.sidebar.markdown("### 🔐 Sign In")
-    email = st.sidebar.text_input("Email")
-    password = st.sidebar.text_input("Password", type="password")
+st.set_page_config(page_title="SemiConnect", page_icon="🔌", layout="centered")
+# Clean Professional Background
+st.markdown("""
+<style>
+    /* Main background - soft light gray */
+    .stApp {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
     
-    col1, col2 = st.sidebar.columns(2)
-    with col1:
-        if st.button("Sign In", use_container_width=True):
-            user = auth_manager.authenticate_user(email, password)
-            if user:
-                st.session_state.authenticated = True
-                st.session_state.user_id = user['id']
-                st.session_state.user_email = email
-                st.rerun()
-            else:
-                st.sidebar.error("Invalid credentials")
+    /* Make all text dark for readability */
+    .stApp h1, .stApp h2, .stApp h3, .stApp p, .stApp label, .stApp .stMarkdown {
+        color: #1a1a2e !important;
+    }
     
-    with col2:
-        if st.button("Sign Up", use_container_width=True):
-            if security_manager.validate_email(email):
-                valid, errors = security_manager.validate_password(password)
-                if valid:
-                    if auth_manager.create_user(email, password):
-                        st.sidebar.success("Account created! Please sign in.")
-                    else:
-                        st.sidebar.error("User already exists")
-                else:
-                    st.sidebar.error("\n".join(errors))
-            else:
-                st.sidebar.error("Invalid email")
+    /* Sidebar - clean white */
+    .css-1d391kg {
+        background-color: #ffffff !important;
+        border-right: 1px solid #e0e0e0;
+    }
+    
+    /* Sidebar text */
+    .css-1d391kg .stMarkdown, .css-1d391kg label {
+        color: #1a1a2e !important;
+    }
+    
+    /* Cards and containers */
+    .stAlert, .stInfo, .stSuccess, .stWarning {
+        background-color: rgba(255,255,255,0.9) !important;
+        border-radius: 10px !important;
+    }
+    
+    /* Buttons */
+    .stButton button {
+        background-color: #4a6cf7 !important;
+        color: white !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        border: none !important;
+    }
+    
+    .stButton button:hover {
+        background-color: #6b8aff !important;
+        transform: scale(1.02);
+        transition: 0.3s;
+    }
+    
+    /* Chat input */
+    .stChatInput input {
+        background-color: white !important;
+        border-radius: 20px !important;
+        border: 2px solid #4a6cf7 !important;
+        padding: 10px 20px !important;
+    }
+    
+    /* Chat messages */
+    .stChatMessage {
+        background-color: rgba(255,255,255,0.85) !important;
+        border-radius: 12px !important;
+        padding: 12px !important;
+        margin: 5px 0 !important;
+    }
+    
+    /* Tabs */
+    .stTabs [data-baseweb="tab"] {
+        background-color: rgba(255,255,255,0.7) !important;
+        border-radius: 8px 8px 0 0 !important;
+        font-weight: 600 !important;
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background-color: #4a6cf7 !important;
+        color: white !important;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-# Main app
-def main():
-    # Sidebar
-    with st.sidebar:
-        st.markdown("### 🔌 SemiConnect")
-        
-        if not st.session_state.authenticated:
-            login_form()
-            st.stop()
-        
-        # User info
-        user = User.get_by_email(st.session_state.user_email)
-        tier = user['tier'].upper() if user else "FREE"
-        st.markdown(f"""
-        **👤 User:** {st.session_state.user_email}
-        **💎 Tier:** {tier}
-        """)
-        
-        # Check daily limit
-        if not auth_manager.check_usage_limit(st.session_state.user_email):
-            st.warning("⚠️ Daily limit reached. Upgrade to Pro!")
-        
-        st.divider()
-        
-        # Mode selection
-        mode = st.radio(
-            "Choose a mode:",
-            ["Market Intelligence", "VLSI Tutor", "Business Ops", "Learning Path"]
-        )
-        st.session_state.mode = mode
-        
-        st.divider()
-        
-        # Watchlist
-        st.markdown("### 📋 Watchlist")
-        new_company = st.text_input("Add company", key="watchlist_input")
-        if st.button("➕ Add", use_container_width=True):
-            if new_company:
-                Watchlist.add(st.session_state.user_id, new_company)
-                st.rerun()
-        
-        # Display watchlist
-        watchlist = Watchlist.get_all(st.session_state.user_id)
-        for item in watchlist:
-            col1, col2 = st.columns([3, 1])
-            col1.write(f"• {item['company_name']}")
-            if col2.button("🗑️", key=f"remove_{item['id']}"):
-                Watchlist.remove(st.session_state.user_id, item['id'])
-                st.rerun()
-        
-        st.divider()
-        
-        if st.button("🚪 Sign Out", use_container_width=True):
-            st.session_state.authenticated = False
-            st.session_state.user_id = None
-            st.session_state.user_email = None
+
+
+st.title("🔌 SemiConnect")
+st.caption("AI agent for the semiconductor industry — Market Intelligence · VLSI Tutor · Business Ops")
+
+tab_chat, tab_tracker, tab_about = st.tabs(["💬 Chat", "📈 Tracker", "ℹ️ About"])
+
+with tab_about:
+    st.subheader("What is SemiConnect?")
+    st.write("""
+    SemiConnect is an AI agent built for the semiconductor industry, with four specialist modes:
+    
+    - **Market Intelligence** — live news on OSAT, fab investments, and supply chain shifts
+    - **VLSI Tutor** — step-by-step teaching of Verilog and digital electronics
+    - **Business Ops** — vendor, sourcing, and supply chain strategy analysis, with support for uploading your own CSV/Excel data for direct analysis
+    - **Learning Path** — guides complete beginners through semiconductor/VLSI fundamentals, step by step, with progress tracking
+    
+    Built by Rushab Oswal using free tools: Python, Gemini API, and DuckDuckGo search.
+    """)
+    st.link_button("View source on GitHub", "https://github.com/oswalrushab26/semiconnect-ai-agent")
+
+    
+with tab_tracker:
+    st.subheader("📈 Supply Chain Watchlist")
+    st.write("Track specific companies and check for the latest news on demand.")
+
+    if "watchlist" not in st.session_state:
+        st.session_state.watchlist = []
+
+    new_company = st.text_input("Add a company to track (e.g. Tata Electronics, Kaynes Semicon)")
+    if st.button("➕ Add to watchlist"):
+        if new_company and new_company not in st.session_state.watchlist:
+            st.session_state.watchlist.append(new_company)
             st.rerun()
-    
-    # Main content
-    # Stats
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        usage = Usage.get_today_usage(st.session_state.user_id)
-        st.metric("💬 Today's Messages", usage['messages_used'])
-    with col2:
-        watchlist_count = len(Watchlist.get_all(st.session_state.user_id))
-        st.metric("🏢 Watchlist", watchlist_count)
-    with col3:
-        tier_name = user['tier'].upper() if user else "FREE"
-        st.metric("💎 Tier", tier_name)
-    
-    st.divider()
-    
-    # Tabs
-    tab_chat, tab_analytics, tab_reports = st.tabs(["💬 Chat", "📊 Analytics", "📄 Reports"])
-    
-    with tab_chat:
-        render_chat()
-    
-    with tab_analytics:
-        render_analytics()
-    
-    with tab_reports:
-        render_reports()
 
-def render_chat():
-    mode = st.session_state.mode
-    mode_descriptions = {
-        "Market Intelligence": "📊 Live OSAT, fab, and supply chain news",
-        "VLSI Tutor": "📚 Step-by-step Verilog & digital electronics",
-        "Business Ops": "💼 Vendor, sourcing & supply chain analysis",
-        "Learning Path": "🎓 Zero to pro: guided semiconductor learning"
-    }
-    st.caption(mode_descriptions[mode])
-    
-    # Check limit before processing
-    if not auth_manager.check_usage_limit(st.session_state.user_email):
-        st.warning("⚠️ Daily message limit reached. Upgrade to Pro for unlimited access!")
-        st.info("💎 Pro plan: $49/month - Unlimited messages, advanced analytics, and more!")
-        return
-    
-    # Get Gemini client
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        st.error("❌ Gemini API key not found! Please check your .env file.")
-        return
-    
-    client = genai.Client(api_key=api_key)
-    
-    # Build prompts
-    prompts = {
-        "Market Intelligence": MARKET_INTEL_PROMPT,
-        "VLSI Tutor": VLSI_TUTOR_PROMPT,
-        "Business Ops": BUSINESS_OPS_PROMPT,
-        "Learning Path": LEARNING_PATH_PROMPT
-    }
-    
-    # Initialize chat
-    if "chat_obj" not in st.session_state or st.session_state.get("current_mode") != mode:
+    st.divider()
+
+    for company in st.session_state.watchlist:
+        col1, col2, col3 = st.columns([3, 2, 1])
+        col1.write(f"**{company}**")
+        check = col2.button("🔍 Check latest", key=f"check_{company}")
+        remove = col3.button("🗑️", key=f"remove_{company}")
+
+        if check:
+            with st.spinner(f"Checking news for {company}..."):
+                result = web_search(f"{company} semiconductor news")
+            st.info(result)
+
+        if remove:
+            st.session_state.watchlist.remove(company)
+            st.rerun()
+
+
+st.sidebar.header("SemiConnect")
+st.sidebar.write("Built by Rushab Oswal")
+mode = st.sidebar.radio("Choose a mode:", ["Market Intelligence", "VLSI Tutor", "Business Ops", "Learning Path"])
+st.sidebar.divider()
+
+learning_topics = [
+    "What is a semiconductor?",
+    "Basic electronics: voltage, current, transistors",
+    "Digital logic: gates and boolean logic",
+    "Sequential logic: flip-flops and memory",
+    "Introduction to Verilog",
+    "Semiconductor industry overview: fab, OSAT, packaging"
+]
+
+mode_descriptions = {
+    "Market Intelligence": "📊 Live OSAT, fab, and supply chain news",
+    "VLSI Tutor": "📚 Step-by-step Verilog & digital electronics",
+    "Business Ops": "💼 Vendor, sourcing & supply chain analysis",
+    "Learning Path": "🎓 Zero to pro: guided semiconductor learning"
+}
+
+st.sidebar.info(mode_descriptions[mode])
+
+uploaded_file = None
+if mode == "Business Ops":
+    st.sidebar.divider()
+    st.sidebar.subheader("📎 Analyze a file")
+    uploaded_file = st.sidebar.file_uploader("Upload vendor/supply data (CSV or Excel)", type=["csv", "xlsx"])
+
+    if uploaded_file is not None:
         try:
-            st.session_state.chat_obj = client.chats.create(
-                model="gemini-flash-latest",
-                config=types.GenerateContentConfig(
-                    system_instruction=prompts[mode],
-                    tools=[web_search]
-                )
-            )
-            st.session_state.current_mode = mode
+            if uploaded_file.name.endswith(".csv"):
+                df = pd.read_csv(uploaded_file)
+            else:
+                df = pd.read_excel(uploaded_file)
+            st.sidebar.success(f"Loaded {len(df)} rows")
+            st.session_state.file_summary = df.describe(include="all").to_string()
+            st.session_state.file_preview = df.head(10).to_string()
         except Exception as e:
-            st.error(f"Failed to initialize chat: {str(e)}")
-            return
-    
-    # Display messages
+            st.sidebar.error("Couldn't read that file. Try a CSV or Excel file.")
+if mode == "Learning Path":
+    if "learning_progress" not in st.session_state:
+        st.session_state.learning_progress = 0
+    st.sidebar.write("**Your progress:**")
+    for i, topic in enumerate(learning_topics):
+        if i < st.session_state.learning_progress:
+            st.sidebar.write(f"✅ {topic}")
+        elif i == st.session_state.learning_progress:
+            st.sidebar.write(f"👉 {topic}")
+        else:
+            st.sidebar.write(f"⬜ {topic}")
+    if st.sidebar.button("Mark current topic complete"):
+        st.session_state.learning_progress = min(st.session_state.learning_progress + 1, len(learning_topics))
+        st.rerun()
+
+
+prompts = {
+    "Market Intelligence": MARKET_INTEL_PROMPT,
+    "VLSI Tutor": VLSI_TUTOR_PROMPT,
+    "Business Ops": BUSINESS_OPS_PROMPT,
+    "Learning Path": LEARNING_PATH_PROMPT
+}
+
+if "chat" not in st.session_state or st.session_state.get("mode") != mode:
+    client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+    system_instruction = prompts[mode]
+    if mode == "Business Ops" and "file_summary" in st.session_state:
+        system_instruction += f"""
+
+The user has uploaded a data file. Here is a preview of the first 10 rows:
+{st.session_state.file_preview}
+
+Here are summary statistics for the file:
+{st.session_state.file_summary}
+
+When the user asks about this data, analyze it using the information above."""
+
+    st.session_state.chat = client.chats.create(
+        model="gemini-flash-latest",
+        config=types.GenerateContentConfig(
+            system_instruction=system_instruction,
+            tools=[web_search]
+        )
+    )
+    st.session_state.mode = mode
+    st.session_state.messages = []
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+with tab_chat:
+    if len(st.session_state.messages) == 0:
+        st.info(f"👋 You're in **{mode}** mode. Ask me anything to get started.")
+
+        examples = {
+            "Market Intelligence": ["Latest news on Tata Electronics", "What's happening with Kaynes Semicon?", "Recent OSAT investments in India"],
+            "VLSI Tutor": ["Explain what a flip-flop is", "Difference between combinational and sequential logic", "Teach me Verilog basics"],
+            "Business Ops": ["OSAT India vs Taiwan comparison", "How to evaluate a vendor's reliability?", "Key risks in semiconductor supply chains"],
+            "Learning Path": ["I'm a complete beginner, where do I start?", "What is a semiconductor?", "Guide me from basics to VLSI"]
+        }
+        st.write("Try asking:")
+        cols = st.columns(len(examples[mode]))
+        for col, ex in zip(cols, examples[mode]):
+            if col.button(ex, use_container_width=True):
+                st.session_state.messages.append({"role": "user", "content": ex})
+                with st.spinner("Thinking..."):
+                    try:
+                        response = st.session_state.chat.send_message(ex)
+                        answer = response.text
+                    except Exception as e:
+                        if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
+                            answer = "⏳ SemiConnect is getting a lot of use right now. Please try again shortly."
+                        else:
+                            answer = "⚠️ Something went wrong. Please try again."
+                st.session_state.messages.append({"role": "assistant", "content": answer})
+                st.rerun()
+
+    avatars = {"user": "🧑", "assistant": "🔌"}
     for msg in st.session_state.messages:
-        with st.chat_message(msg["role"], avatar="🧑" if msg["role"] == "user" else "🔌"):
+        with st.chat_message(msg["role"], avatar=avatars[msg["role"]]):
             st.write(msg["content"])
-    
-    # Chat input
+
     user_input = st.chat_input("Ask something...")
     if user_input:
         st.session_state.messages.append({"role": "user", "content": user_input})
-        with st.chat_message("user", avatar="🧑"):
+        with st.chat_message("user", avatar=avatars["user"]):
             st.write(user_input)
-        
-        with st.chat_message("assistant", avatar="🔌"):
+
+        with st.chat_message("assistant", avatar=avatars["assistant"]):
             with st.spinner("Thinking..."):
                 try:
-                    response = st.session_state.chat_obj.send_message(user_input)
+                    response = st.session_state.chat.send_message(user_input)
                     answer = response.text
                 except Exception as e:
-                    if "429" in str(e):
-                        answer = "⏳ Too many requests. Please try again in a few minutes."
+                    if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
+                        answer = "⏳ SemiConnect is getting a lot of use right now and has hit its free-tier limit. Please try again in a few minutes, or come back tomorrow — thanks for your patience!"
                     else:
-                        answer = f"⚠️ Error: {str(e)}"
-                st.write(answer)
-        
+                        answer = "⚠️ Something went wrong on my end. Please try rephrasing your question or try again shortly."
+            st.write(answer)
+
         st.session_state.messages.append({"role": "assistant", "content": answer})
-        
-        # Save to database and increment usage
-        ChatHistory.save(st.session_state.user_id, mode, user_input, "user", answer)
-        Usage.increment(st.session_state.user_id, "message")
 
-def render_analytics():
-    st.subheader("📊 Analytics Dashboard")
-    
-    # Check if user is Pro or Enterprise
-    user = User.get_by_email(st.session_state.user_email)
-    is_premium = user and user['tier'] in ["pro", "enterprise"]
-    
-    if is_premium:
-        watchlist = Watchlist.get_all(st.session_state.user_id)
-        company_names = [item['company_name'] for item in watchlist]
-        
-        if company_names:
-            sentiment_data = analytics_dashboard.get_market_sentiment(company_names)
-            fig = analytics_dashboard.create_sentiment_chart(sentiment_data)
-            st.plotly_chart(fig, use_container_width=True)
-        else:
-            st.info("Add companies to your watchlist to see sentiment analysis.")
-        
-        # User stats
-        stats = analytics_dashboard.get_user_stats(st.session_state.user_id)
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Total Messages", stats['total_messages'])
-        col2.metric("Most Used Mode", stats['most_used_mode'])
-        col3.metric("Last 7 Days", stats['last_7_days'])
-    else:
-        st.info("🔒 Analytics Dashboard is a Pro feature")
-        st.markdown("""
-        Upgrade to Pro to access:
-        - Market sentiment analysis
-        - Usage analytics
-        - Advanced visualizations
-        - Export capabilities
-        
-        💎 **Pro Plan: $49/month**
-        """)
-        if st.button("💼 Upgrade to Pro"):
-            st.success("Payment integration coming soon!")
 
-def render_reports():
-    st.subheader("📄 Report Generation")
-    
-    # Check if user is Pro or Enterprise
-    user = User.get_by_email(st.session_state.user_email)
-    is_premium = user and user['tier'] in ["pro", "enterprise"]
-    
-    if is_premium:
-        report_type = st.selectbox(
-            "Select report type",
-            ["Weekly Market Brief", "Competitor Analysis", "Supply Chain Report"]
-        )
-        
-        watchlist = Watchlist.get_all(st.session_state.user_id)
-        company_names = [item['company_name'] for item in watchlist]
-        
-        if st.button("Generate Report", use_container_width=True):
-            with st.spinner("Generating report..."):
-                if report_type == "Weekly Market Brief":
-                    report = report_generator.generate_weekly_brief(company_names)
-                else:
-                    report = "Report generation coming soon..."
-                
-                st.markdown(report)
-                
-                # Download option
-                st.download_button(
-                    label="📥 Download Report",
-                    data=report,
-                    file_name=f"report_{datetime.now().strftime('%Y%m%d')}.md",
-                    mime="text/markdown"
-                )
-    else:
-        st.info("🔒 Report Generation is a Pro feature")
-        st.markdown("""
-        Upgrade to Pro to generate:
-        - Weekly market briefs
-        - Competitor analysis
-        - Supply chain reports
-        - Custom reports
-        
-        💎 **Pro Plan: $49/month**
-        """)
+st.sidebar.divider()
+if st.sidebar.button("🔄 Clear conversation"):
+    st.session_state.messages = []
+    st.session_state.pop("chat", None)
+    st.rerun()
 
-if __name__ == "__main__":
-    main()
-    
+st.sidebar.divider()
+st.sidebar.subheader("💬 Feedback")
+st.sidebar.write("Help shape what SemiConnect becomes next:")
+st.sidebar.link_button("Share your feedback", "https://docs.google.com/forms/d/e/1FAIpQLSdsaegorN8MwUMLLjgehV7ddzwr5oTGIK6xH3BauSvz3bSGww/viewform?usp=publish-editor")
+
+st.sidebar.divider()
+st.sidebar.caption("Built with Python, Gemini API & DuckDuckGo search — 100% free tools")
+st.sidebar.caption("[GitHub](https://github.com/oswalrushab26/semiconnect-ai-agent)")
+
