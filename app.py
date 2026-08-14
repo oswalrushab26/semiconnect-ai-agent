@@ -14,7 +14,6 @@ if "GEMINI_API_KEY" not in os.environ and "GEMINI_API_KEY" in st.secrets:
 _search_cache = {}
 
 def web_search(query: str) -> str:
-    """Searches the web and returns a summary of top results."""
     if query in _search_cache:
         return _search_cache[query]
     results = DDGS().text(query, max_results=5)
@@ -23,82 +22,95 @@ def web_search(query: str) -> str:
     return combined
 
 st.set_page_config(page_title="SemiConnect", page_icon="🔌", layout="centered")
-# Clean Professional Background
+
+# ============ COMPLETE CLEAN CSS - NO BLUE ANYWHERE ============
 st.markdown("""
 <style>
-    /* Main background - soft light gray */
+    /* Main background */
     .stApp {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
     }
     
-    /* Make all text dark for readability */
-    .stApp h1, .stApp h2, .stApp h3, .stApp p, .stApp label, .stApp .stMarkdown {
+    /* All text */
+    .stApp h1, .stApp h2, .stApp h3, .stApp p, .stApp label {
         color: #1a1a2e !important;
     }
     
-    /* Sidebar - clean white */
-    .css-1d391kg {
+    /* Sidebar */
+    section[data-testid="stSidebar"] {
         background-color: #ffffff !important;
-        border-right: 1px solid #e0e0e0;
     }
     
-    /* Sidebar text */
-    .css-1d391kg .stMarkdown, .css-1d391kg label {
-        color: #1a1a2e !important;
-    }
-    
-    /* Cards and containers */
-    .stAlert, .stInfo, .stSuccess, .stWarning {
-        background-color: rgba(255,255,255,0.9) !important;
-        border-radius: 10px !important;
-    }
-    
-    /* Buttons */
+    /* ===== FIX: Example buttons (Tata Electronics, etc.) ===== */
     .stButton button {
-        background-color: #4a6cf7 !important;
-        color: white !important;
+        background-color: #f0f2f6 !important;
+        color: #1a1a2e !important;
+        border: 1px solid #d0d0d0 !important;
         border-radius: 8px !important;
-        font-weight: 600 !important;
-        border: none !important;
+        padding: 8px 16px !important;
+        font-weight: 500 !important;
     }
     
     .stButton button:hover {
-        background-color: #6b8aff !important;
-        transform: scale(1.02);
-        transition: 0.3s;
+        background-color: #e0e2e6 !important;
+        border-color: #b0b0b0 !important;
     }
     
-    /* Chat input */
-    .stChatInput input {
-        background-color: white !important;
-        border-radius: 20px !important;
-        border: 2px solid #4a6cf7 !important;
-        padding: 10px 20px !important;
-    }
-    
-    /* Chat messages */
+    /* ===== FIX: Chat messages ===== */
     .stChatMessage {
-        background-color: rgba(255,255,255,0.85) !important;
+        background-color: #ffffff !important;
         border-radius: 12px !important;
-        padding: 12px !important;
-        margin: 5px 0 !important;
+        padding: 12px 16px !important;
+        margin: 8px 0 !important;
+        border: 1px solid #e8e8e8 !important;
     }
     
-    /* Tabs */
+    .stChatMessage:has([data-testid="chat-avatar-user"]) {
+        background-color: #f0f2f6 !important;
+    }
+    
+    /* ===== FIX: Chat input box ===== */
+    .stChatInput input {
+        background-color: #ffffff !important;
+        border-radius: 25px !important;
+        border: 2px solid #d0d0d0 !important;
+        padding: 10px 20px !important;
+        color: #1a1a2e !important;
+    }
+    
+    .stChatInput input:focus {
+        border-color: #4a6cf7 !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* ===== FIX: Tabs ===== */
     .stTabs [data-baseweb="tab"] {
-        background-color: rgba(255,255,255,0.7) !important;
+        background-color: #f0f2f5 !important;
         border-radius: 8px 8px 0 0 !important;
-        font-weight: 600 !important;
+        padding: 8px 20px !important;
+        color: #555 !important;
     }
     
     .stTabs [aria-selected="true"] {
-        background-color: #4a6cf7 !important;
-        color: white !important;
+        background-color: #ffffff !important;
+        color: #1a1a2e !important;
+        border-bottom: 3px solid #4a6cf7 !important;
+    }
+    
+    /* ===== FIX: Sidebar buttons ===== */
+    section[data-testid="stSidebar"] .stButton button {
+        background-color: #f0f2f6 !important;
+        color: #1a1a2e !important;
+        border: 1px solid #d0d0d0 !important;
+    }
+    
+    section[data-testid="stSidebar"] .stButton button:hover {
+        background-color: #e0e2e6 !important;
     }
 </style>
 """, unsafe_allow_html=True)
-
-
+# =================================================
 
 st.title("🔌 SemiConnect")
 st.caption("AI agent for the semiconductor industry — Market Intelligence · VLSI Tutor · Business Ops")
@@ -144,7 +156,7 @@ with tab_tracker:
         if check:
             with st.spinner(f"Checking news for {company}..."):
                 result = web_search(f"{company} semiconductor news")
-            st.info(result)
+            st.write(f"📰 {result}")
 
         if remove:
             st.session_state.watchlist.remove(company)
@@ -172,7 +184,7 @@ mode_descriptions = {
     "Learning Path": "🎓 Zero to pro: guided semiconductor learning"
 }
 
-st.sidebar.info(mode_descriptions[mode])
+st.sidebar.write(mode_descriptions[mode])
 
 uploaded_file = None
 if mode == "Business Ops":
@@ -186,11 +198,12 @@ if mode == "Business Ops":
                 df = pd.read_csv(uploaded_file)
             else:
                 df = pd.read_excel(uploaded_file)
-            st.sidebar.success(f"Loaded {len(df)} rows")
+            st.sidebar.write(f"✅ Loaded {len(df)} rows")
             st.session_state.file_summary = df.describe(include="all").to_string()
             st.session_state.file_preview = df.head(10).to_string()
         except Exception as e:
-            st.sidebar.error("Couldn't read that file. Try a CSV or Excel file.")
+            st.sidebar.write(f"❌ Couldn't read that file. Try a CSV or Excel file.")
+
 if mode == "Learning Path":
     if "learning_progress" not in st.session_state:
         st.session_state.learning_progress = 0
@@ -244,7 +257,7 @@ if "messages" not in st.session_state:
 
 with tab_chat:
     if len(st.session_state.messages) == 0:
-        st.info(f"👋 You're in **{mode}** mode. Ask me anything to get started.")
+        st.write(f"👋 You're in **{mode}** mode. Ask me anything to get started.")
 
         examples = {
             "Market Intelligence": ["Latest news on Tata Electronics", "What's happening with Kaynes Semicon?", "Recent OSAT investments in India"],
@@ -309,4 +322,3 @@ st.sidebar.link_button("Share your feedback", "https://docs.google.com/forms/d/e
 st.sidebar.divider()
 st.sidebar.caption("Built with Python, Gemini API & DuckDuckGo search — 100% free tools")
 st.sidebar.caption("[GitHub](https://github.com/oswalrushab26/semiconnect-ai-agent)")
-
