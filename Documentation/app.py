@@ -14,6 +14,7 @@ if "GEMINI_API_KEY" not in os.environ and "GEMINI_API_KEY" in st.secrets:
 _search_cache = {}
 
 def web_search(query: str) -> str:
+    """Searches the web and returns a summary of top results."""
     if query in _search_cache:
         return _search_cache[query]
     results = DDGS().text(query, max_results=5)
@@ -23,25 +24,17 @@ def web_search(query: str) -> str:
 
 st.set_page_config(page_title="SemiConnect", page_icon="🔌", layout="centered")
 
-# ============ COMPLETE CLEAN CSS - NO BLUE ANYWHERE ============
 st.markdown("""
 <style>
-    /* Main background */
     .stApp {
         background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
     }
-    
-    /* All text */
     .stApp h1, .stApp h2, .stApp h3, .stApp p, .stApp label {
         color: #1a1a2e !important;
     }
-    
-    /* Sidebar */
     section[data-testid="stSidebar"] {
         background-color: #ffffff !important;
     }
-    
-    /* ===== FIX: Example buttons (Tata Electronics, etc.) ===== */
     .stButton button {
         background-color: #f0f2f6 !important;
         color: #1a1a2e !important;
@@ -50,13 +43,10 @@ st.markdown("""
         padding: 8px 16px !important;
         font-weight: 500 !important;
     }
-    
     .stButton button:hover {
         background-color: #e0e2e6 !important;
         border-color: #b0b0b0 !important;
     }
-    
-    /* ===== FIX: Chat messages ===== */
     .stChatMessage {
         background-color: #ffffff !important;
         border-radius: 12px !important;
@@ -64,12 +54,9 @@ st.markdown("""
         margin: 8px 0 !important;
         border: 1px solid #e8e8e8 !important;
     }
-    
     .stChatMessage:has([data-testid="chat-avatar-user"]) {
         background-color: #f0f2f6 !important;
     }
-    
-    /* ===== FIX: Chat input box ===== */
     .stChatInput input {
         background-color: #ffffff !important;
         border-radius: 25px !important;
@@ -77,43 +64,35 @@ st.markdown("""
         padding: 10px 20px !important;
         color: #1a1a2e !important;
     }
-    
     .stChatInput input:focus {
         border-color: #4a6cf7 !important;
         outline: none !important;
         box-shadow: none !important;
     }
-    
-    /* ===== FIX: Tabs ===== */
     .stTabs [data-baseweb="tab"] {
         background-color: #f0f2f5 !important;
         border-radius: 8px 8px 0 0 !important;
         padding: 8px 20px !important;
         color: #555 !important;
     }
-    
     .stTabs [aria-selected="true"] {
         background-color: #ffffff !important;
         color: #1a1a2e !important;
         border-bottom: 3px solid #4a6cf7 !important;
     }
-    
-    /* ===== FIX: Sidebar buttons ===== */
     section[data-testid="stSidebar"] .stButton button {
         background-color: #f0f2f6 !important;
         color: #1a1a2e !important;
         border: 1px solid #d0d0d0 !important;
     }
-    
     section[data-testid="stSidebar"] .stButton button:hover {
         background-color: #e0e2e6 !important;
     }
 </style>
 """, unsafe_allow_html=True)
-# =================================================
 
 st.title("🔌 SemiConnect")
-st.caption("AI agent for the semiconductor industry — Market Intelligence · VLSI Tutor · Business Ops")
+st.caption("AI agent for the semiconductor industry — Market Intelligence · VLSI Tutor · Business Ops · Learning Path")
 
 tab_chat, tab_tracker, tab_about = st.tabs(["💬 Chat", "📈 Tracker", "ℹ️ About"])
 
@@ -121,17 +100,16 @@ with tab_about:
     st.subheader("What is SemiConnect?")
     st.write("""
     SemiConnect is an AI agent built for the semiconductor industry, with four specialist modes:
-    
+
     - **Market Intelligence** — live news on OSAT, fab investments, and supply chain shifts
     - **VLSI Tutor** — step-by-step teaching of Verilog and digital electronics
     - **Business Ops** — vendor, sourcing, and supply chain strategy analysis, with support for uploading your own CSV/Excel data for direct analysis
     - **Learning Path** — guides complete beginners through semiconductor/VLSI fundamentals, step by step, with progress tracking
-    
+
     Built by Rushab Oswal using free tools: Python, Gemini API, and DuckDuckGo search.
     """)
     st.link_button("View source on GitHub", "https://github.com/oswalrushab26/semiconnect-ai-agent")
 
-    
 with tab_tracker:
     st.subheader("📈 Supply Chain Watchlist")
     st.write("Track specific companies and check for the latest news on demand.")
@@ -161,7 +139,6 @@ with tab_tracker:
         if remove:
             st.session_state.watchlist.remove(company)
             st.rerun()
-
 
 st.sidebar.header("SemiConnect")
 st.sidebar.write("Built by Rushab Oswal")
@@ -201,8 +178,8 @@ if mode == "Business Ops":
             st.sidebar.write(f"✅ Loaded {len(df)} rows")
             st.session_state.file_summary = df.describe(include="all").to_string()
             st.session_state.file_preview = df.head(10).to_string()
-        except Exception as e:
-            st.sidebar.write(f"❌ Couldn't read that file. Try a CSV or Excel file.")
+        except Exception:
+            st.sidebar.write("❌ Couldn't read that file. Try a CSV or Excel file.")
 
 if mode == "Learning Path":
     if "learning_progress" not in st.session_state:
@@ -218,7 +195,6 @@ if mode == "Learning Path":
     if st.sidebar.button("Mark current topic complete"):
         st.session_state.learning_progress = min(st.session_state.learning_progress + 1, len(learning_topics))
         st.rerun()
-
 
 prompts = {
     "Market Intelligence": MARKET_INTEL_PROMPT,
@@ -255,9 +231,18 @@ When the user asks about this data, analyze it using the information above."""
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+def get_friendly_error(e):
+    err = str(e)
+    if "429" in err or "RESOURCE_EXHAUSTED" in err:
+        return "⏳ SemiConnect is getting a lot of use right now and has hit its free-tier limit. Please try again in a few minutes, or come back tomorrow — thanks for your patience!"
+    elif "503" in err or "UNAVAILABLE" in err:
+        return "⏳ The AI service is experiencing high demand right now. Please try again in a moment."
+    else:
+        return "⚠️ Something went wrong on my end. Please try rephrasing your question or try again shortly."
+
 with tab_chat:
     if len(st.session_state.messages) == 0:
-        st.write(f"👋 You're in **{mode}** mode. Ask me anything to get started.")
+        st.info(f"👋 You're in **{mode}** mode. Ask me anything to get started.")
 
         examples = {
             "Market Intelligence": ["Latest news on Tata Electronics", "What's happening with Kaynes Semicon?", "Recent OSAT investments in India"],
@@ -275,17 +260,14 @@ with tab_chat:
                         response = st.session_state.chat.send_message(ex)
                         answer = response.text
                     except Exception as e:
-                    if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e) or "503" in str(e) or "UNAVAILABLE" in str(e):
-                            answer = "⏳ SemiConnect is getting a lot of use right now. Please try again shortly."
-                    else:
-                            answer = "⚠️ Something went wrong. Please try again."
+                        answer = get_friendly_error(e)
                 st.session_state.messages.append({"role": "assistant", "content": answer})
                 st.rerun()
 
     avatars = {"user": "🧑", "assistant": "🔌"}
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"], avatar=avatars[msg["role"]]):
-            st.write(answer)
+            st.markdown(msg["content"])
 
     user_input = st.chat_input("Ask something...")
     if user_input:
@@ -299,14 +281,10 @@ with tab_chat:
                     response = st.session_state.chat.send_message(user_input)
                     answer = response.text
                 except Exception as e:
-                    if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
-                        answer = "⏳ SemiConnect is getting a lot of use right now and has hit its free-tier limit. Please try again in a few minutes, or come back tomorrow — thanks for your patience!"
-                    else:
-                        answer = "⚠️ Something went wrong on my end. Please try rephrasing your question or try again shortly."
+                    answer = get_friendly_error(e)
             st.markdown(answer)
 
         st.session_state.messages.append({"role": "assistant", "content": answer})
-
 
 st.sidebar.divider()
 if st.sidebar.button("🔄 Clear conversation"):
@@ -321,4 +299,4 @@ st.sidebar.link_button("Share your feedback", "https://docs.google.com/forms/d/e
 
 st.sidebar.divider()
 st.sidebar.caption("Built with Python, Gemini API & DuckDuckGo search — 100% free tools")
-st.sidebar.caption("[GitHub](https://github.com/oswalrushab26/semiconnect-ai-agent)") 
+st.sidebar.caption("[GitHub](https://github.com/oswalrushab26/semiconnect-ai-agent)")
