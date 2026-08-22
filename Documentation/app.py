@@ -303,7 +303,7 @@ with tab_chat:
                    st.error(f"DEBUG: {e}")
                 if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
                         answer = "⏳ SemiConnect is getting a lot of use right now and has hit its free-tier limit. Please try again in a few minutes, or come back tomorrow — thanks for your patience!"
-                    else:
+                else:
                         answer = "⚠️ Something went wrong on my end. Please try rephrasing your question or try again shortly."
             st.markdown(answer)
 
