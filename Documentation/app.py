@@ -278,7 +278,7 @@ with tab_chat:
                       st.error(f"DEBUG: {e}")
                     if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
                             answer = "⏳ SemiConnect is getting a lot of use right now. Please try again shortly."
-                        else:
+                    else:
                             answer = "⚠️ Something went wrong. Please try again."
                 st.session_state.messages.append({"role": "assistant", "content": answer})
                 st.rerun()
