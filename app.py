@@ -285,7 +285,7 @@ with tab_chat:
     avatars = {"user": "🧑", "assistant": "🔌"}
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"], avatar=avatars[msg["role"]]):
-            st.write(msg["content"])
+            st.write(answer)
 
     user_input = st.chat_input("Ask something...")
     if user_input:
@@ -303,7 +303,7 @@ with tab_chat:
                         answer = "⏳ SemiConnect is getting a lot of use right now and has hit its free-tier limit. Please try again in a few minutes, or come back tomorrow — thanks for your patience!"
                     else:
                         answer = "⚠️ Something went wrong on my end. Please try rephrasing your question or try again shortly."
-            st.write(answer)
+            st.markdown(answer)
 
         st.session_state.messages.append({"role": "assistant", "content": answer})
 
