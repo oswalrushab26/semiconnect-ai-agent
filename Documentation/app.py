@@ -275,7 +275,8 @@ with tab_chat:
                         response = st.session_state.chat.send_message(ex)
                         answer = response.text
                     except Exception as e:
-                        if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
+                      st.error(f"DEBUG: {e}")
+                    if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
                             answer = "⏳ SemiConnect is getting a lot of use right now. Please try again shortly."
                         else:
                             answer = "⚠️ Something went wrong. Please try again."
@@ -299,7 +300,8 @@ with tab_chat:
                     response = st.session_state.chat.send_message(user_input)
                     answer = response.text
                 except Exception as e:
-                    if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
+                   st.error(f"DEBUG: {e}")
+                if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
                         answer = "⏳ SemiConnect is getting a lot of use right now and has hit its free-tier limit. Please try again in a few minutes, or come back tomorrow — thanks for your patience!"
                     else:
                         answer = "⚠️ Something went wrong on my end. Please try rephrasing your question or try again shortly."
@@ -321,4 +323,4 @@ st.sidebar.link_button("Share your feedback", "https://docs.google.com/forms/d/e
 
 st.sidebar.divider()
 st.sidebar.caption("Built with Python, Gemini API & DuckDuckGo search — 100% free tools")
-st.sidebar.caption("[GitHub](https://github.com/oswalrushab26/semiconnect-ai-agent)")
+st.sidebar.caption("[GitHub](https://github.com/oswalrushab26/semiconnect-ai-agent)") 
