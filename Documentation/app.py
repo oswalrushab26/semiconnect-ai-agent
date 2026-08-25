@@ -8,6 +8,11 @@ import os
 from prompts import MARKET_INTEL_PROMPT, VLSI_TUTOR_PROMPT, BUSINESS_OPS_PROMPT, LEARNING_PATH_PROMPT
 from home import render_home
 
+def load_css():
+    css_path = os.path.join(os.path.dirname(__file__), "styles.css")
+    with open(css_path, "r", encoding="utf-8") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
 load_dotenv()
 if "GEMINI_API_KEY" not in os.environ and "GEMINI_API_KEY" in st.secrets:
     os.environ["GEMINI_API_KEY"] = st.secrets["GEMINI_API_KEY"]
@@ -24,73 +29,7 @@ def web_search(query: str) -> str:
     return combined
 
 st.set_page_config(page_title="SemiConnect", page_icon="🔌", layout="centered")
-
-st.markdown("""
-<style>
-    .stApp {
-        background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
-    }
-    .stApp h1, .stApp h2, .stApp h3, .stApp p, .stApp label {
-        color: #1a1a2e !important;
-    }
-    section[data-testid="stSidebar"] {
-        background-color: #ffffff !important;
-    }
-    .stButton button {
-        background-color: #f0f2f6 !important;
-        color: #1a1a2e !important;
-        border: 1px solid #d0d0d0 !important;
-        border-radius: 8px !important;
-        padding: 8px 16px !important;
-        font-weight: 500 !important;
-    }
-    .stButton button:hover {
-        background-color: #e0e2e6 !important;
-        border-color: #b0b0b0 !important;
-    }
-    .stChatMessage {
-        background-color: #ffffff !important;
-        border-radius: 12px !important;
-        padding: 12px 16px !important;
-        margin: 8px 0 !important;
-        border: 1px solid #e8e8e8 !important;
-    }
-    .stChatMessage:has([data-testid="chat-avatar-user"]) {
-        background-color: #f0f2f6 !important;
-    }
-    .stChatInput input {
-        background-color: #ffffff !important;
-        border-radius: 25px !important;
-        border: 2px solid #d0d0d0 !important;
-        padding: 10px 20px !important;
-        color: #1a1a2e !important;
-    }
-    .stChatInput input:focus {
-        border-color: #4a6cf7 !important;
-        outline: none !important;
-        box-shadow: none !important;
-    }
-    .stTabs [data-baseweb="tab"] {
-        background-color: #f0f2f5 !important;
-        border-radius: 8px 8px 0 0 !important;
-        padding: 8px 20px !important;
-        color: #555 !important;
-    }
-    .stTabs [aria-selected="true"] {
-        background-color: #ffffff !important;
-        color: #1a1a2e !important;
-        border-bottom: 3px solid #4a6cf7 !important;
-    }
-    section[data-testid="stSidebar"] .stButton button {
-        background-color: #f0f2f6 !important;
-        color: #1a1a2e !important;
-        border: 1px solid #d0d0d0 !important;
-    }
-    section[data-testid="stSidebar"] .stButton button:hover {
-        background-color: #e0e2e6 !important;
-    }
-</style>
-""", unsafe_allow_html=True)
+load_css()
 
 st.title("🔌 SemiConnect")
 st.caption("AI agent for the semiconductor industry — Market Intelligence · VLSI Tutor · Business Ops · Learning Path")
@@ -260,6 +199,7 @@ with tab_chat:
                     try:
                         response = st.session_state.chat.send_message(ex)
                         answer = response.text
+                        print(f"DEBUG: Gemini response characters = {len(answer)}")
                     except Exception as e:
                         answer = get_friendly_error(e)
                 st.session_state.messages.append({"role": "assistant", "content": answer})
@@ -281,6 +221,7 @@ with tab_chat:
                 try:
                     response = st.session_state.chat.send_message(user_input)
                     answer = response.text
+                    print(f"DEBUG: Gemini response characters = {len(answer)}")
                 except Exception as e:
                     answer = get_friendly_error(e)
             st.markdown(answer)

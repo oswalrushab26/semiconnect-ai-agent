@@ -1,0 +1,178 @@
+/* =========================================================
+   SemiConnect - Global Styles
+   ========================================================= */
+
+/* ---------- App Background ---------- */
+
+.stApp {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+}
+
+
+/* ---------- Global Text ---------- */
+
+.stApp h1,
+.stApp h2,
+.stApp h3,
+.stApp h4,
+.stApp h5,
+.stApp h6,
+.stApp p,
+.stApp label,
+.stApp li,
+.stApp strong,
+.stApp em,
+.stApp blockquote,
+.stApp td,
+.stApp th {
+    color: #1a1a2e !important;
+}
+
+
+/* ---------- Sidebar ---------- */
+
+section[data-testid="stSidebar"] {
+    background-color: #ffffff !important;
+}
+
+
+/* ---------- Buttons ---------- */
+
+.stButton button {
+    background-color: #f0f2f6 !important;
+    color: #1a1a2e !important;
+    border: 1px solid #d0d0d0 !important;
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
+    font-weight: 500 !important;
+}
+
+.stButton button:hover {
+    background-color: #e0e2e6 !important;
+    border-color: #b0b0b0 !important;
+}
+
+
+/* ---------- Chat Message Container ---------- */
+
+.stChatMessage {
+    background-color: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 12px 16px !important;
+    margin: 8px 0 !important;
+    border: 1px solid #e8e8e8 !important;
+}
+
+
+/* User message background */
+
+.stChatMessage:has([data-testid="chat-avatar-user"]) {
+    background-color: #f0f2f6 !important;
+}
+
+
+/* ---------- AI Chat Markdown ---------- */
+
+/*
+   Streamlit renders the AI response as Markdown.
+   These rules force all common Markdown elements
+   to use a readable dark text color.
+*/
+
+.stChatMessage [data-testid="stMarkdownContainer"],
+.stChatMessage [data-testid="stMarkdownContainer"] p,
+.stChatMessage [data-testid="stMarkdownContainer"] li,
+.stChatMessage [data-testid="stMarkdownContainer"] strong,
+.stChatMessage [data-testid="stMarkdownContainer"] em,
+.stChatMessage [data-testid="stMarkdownContainer"] span,
+.stChatMessage [data-testid="stMarkdownContainer"] blockquote,
+.stChatMessage [data-testid="stMarkdownContainer"] td,
+.stChatMessage [data-testid="stMarkdownContainer"] th {
+    color: #1a1a2e !important;
+}
+
+
+/* AI response headings */
+
+.stChatMessage [data-testid="stMarkdownContainer"] h1,
+.stChatMessage [data-testid="stMarkdownContainer"] h2,
+.stChatMessage [data-testid="stMarkdownContainer"] h3,
+.stChatMessage [data-testid="stMarkdownContainer"] h4,
+.stChatMessage [data-testid="stMarkdownContainer"] h5,
+.stChatMessage [data-testid="stMarkdownContainer"] h6 {
+    color: #1a1a2e !important;
+}
+
+
+/* AI response bullet lists */
+
+.stChatMessage [data-testid="stMarkdownContainer"] ul,
+.stChatMessage [data-testid="stMarkdownContainer"] ol {
+    color: #1a1a2e !important;
+}
+
+
+/* AI response links */
+
+.stChatMessage [data-testid="stMarkdownContainer"] a {
+    color: #2457d6 !important;
+}
+
+
+/* ---------- Code Blocks ---------- */
+
+.stChatMessage pre {
+    background-color: #f5f5f5 !important;
+    border: 1px solid #dddddd !important;
+    border-radius: 8px !important;
+}
+
+.stChatMessage code {
+    color: #1a1a2e !important;
+}
+
+
+/* ---------- Chat Input ---------- */
+
+.stChatInput input {
+    background-color: #ffffff !important;
+    border-radius: 25px !important;
+    border: 2px solid #d0d0d0 !important;
+    padding: 10px 20px !important;
+    color: #1a1a2e !important;
+}
+
+.stChatInput input:focus {
+    border-color: #4a6cf7 !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+
+/* ---------- Tabs ---------- */
+
+.stTabs [data-baseweb="tab"] {
+    background-color: #f0f2f5 !important;
+    border-radius: 8px 8px 0 0 !important;
+    padding: 8px 20px !important;
+    color: #555 !important;
+}
+
+.stTabs [aria-selected="true"] {
+    background-color: #ffffff !important;
+    color: #1a1a2e !important;
+    border-bottom: 3px solid #4a6cf7 !important;
+}
+
+
+/* ---------- Sidebar Buttons ---------- */
+
+section[data-testid="stSidebar"] .stButton button {
+    background-color: #f0f2f6 !important;
+    color: #1a1a2e !important;
+    border: 1px solid #d0d0d0 !important;
+}
+
+section[data-testid="stSidebar"] .stButton button:hover {
+    background-color: #e0e2e6 !important;
+}
