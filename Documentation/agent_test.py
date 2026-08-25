@@ -27,7 +27,7 @@ else:
     system_instruction = MARKET_INTEL_PROMPT
 
 chat = client.chats.create(
-    model="gemini-flash-latest",
+    model="gemini-flash-lite-latest",
     config=types.GenerateContentConfig(
         system_instruction=system_instruction,
         tools=[web_search]

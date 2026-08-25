@@ -219,7 +219,7 @@ Here are summary statistics for the file:
 When the user asks about this data, analyze it using the information above."""
 
     st.session_state.chat = client.chats.create(
-        model="gemini-flash-latest",
+        model="gemini-flash-lite-latest",
         config=types.GenerateContentConfig(
             system_instruction=system_instruction,
             tools=[web_search]
