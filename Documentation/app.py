@@ -6,6 +6,7 @@ from ddgs import DDGS
 import pandas as pd
 import os
 from prompts import MARKET_INTEL_PROMPT, VLSI_TUTOR_PROMPT, BUSINESS_OPS_PROMPT, LEARNING_PATH_PROMPT
+from home import render_home
 
 load_dotenv()
 if "GEMINI_API_KEY" not in os.environ and "GEMINI_API_KEY" in st.secrets:
@@ -97,7 +98,7 @@ st.caption("AI agent for the semiconductor industry — Market Intelligence · V
 tab_chat, tab_tracker, tab_about = st.tabs(["💬 Chat", "📈 Tracker", "ℹ️ About"])
 
 with tab_about:
-    st.subheader("What is SemiConnect?")
+    render_home()
     st.write("""
     SemiConnect is an AI agent built for the semiconductor industry, with four specialist modes:
 
