@@ -84,7 +84,6 @@ section[data-testid="stSidebar"] {
 .stChatMessage [data-testid="stMarkdownContainer"] li,
 .stChatMessage [data-testid="stMarkdownContainer"] strong,
 .stChatMessage [data-testid="stMarkdownContainer"] em,
-.stChatMessage [data-testid="stMarkdownContainer"] span,
 .stChatMessage [data-testid="stMarkdownContainer"] blockquote,
 .stChatMessage [data-testid="stMarkdownContainer"] td,
 .stChatMessage [data-testid="stMarkdownContainer"] th {
@@ -125,12 +124,22 @@ section[data-testid="stSidebar"] {
     background-color: #f5f5f5 !important;
     border: 1px solid #dddddd !important;
     border-radius: 8px !important;
+    padding: 12px 16px !important;
+    overflow-x: auto !important;
 }
 
-.stChatMessage code {
+.stChatMessage pre code {
     color: #1a1a2e !important;
+    background-color: transparent !important;
+    font-family: Consolas, "Courier New", monospace !important;
 }
 
+.stChatMessage :not(pre) > code {
+    color: #1a1a2e !important;
+    background-color: #eef0f4 !important;
+    padding: 2px 5px !important;
+    border-radius: 4px !important;
+}
 
 /* ---------- Chat Input ---------- */
 

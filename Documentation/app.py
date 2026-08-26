@@ -29,11 +29,11 @@ def web_search(query: str) -> str:
     _search_cache[query] = combined
     return combined
 
-st.set_page_config(page_title="SemiConnect", page_icon="??", layout="centered")
+st.set_page_config(page_title="SemiConnect", page_icon=chr(0x1F50C), layout="centered")
 load_css()
 
 st.title(chr(0x1F50C) + " SemiConnect")
-st.caption("AI agent for the semiconductor industry â€” Market Intelligence Â· VLSI Tutor Â· Business Ops Â· Learning Path")
+st.caption("AI agent for the semiconductor industry " + chr(0x2014) + " Market Intelligence " + chr(0x00B7) + " VLSI Tutor " + chr(0x00B7) + " Business Ops " + chr(0x00B7) + " Learning Path")
 
 tab_chat, tab_tracker, tab_about = st.tabs(["\U0001F4AC Chat", "\U0001F4C8 Tracker", "\u2139\uFE0F About"])
 
@@ -42,24 +42,24 @@ with tab_about:
     st.write("""
     SemiConnect is an AI agent built for the semiconductor industry, with four specialist modes:
 
-    - **Market Intelligence** â€” live news on OSAT, fab investments, and supply chain shifts
-    - **VLSI Tutor** â€” step-by-step teaching of Verilog and digital electronics
-    - **Business Ops** â€” vendor, sourcing, and supply chain strategy analysis, with support for uploading your own CSV/Excel data for direct analysis
-    - **Learning Path** â€” guides complete beginners through semiconductor/VLSI fundamentals, step by step, with progress tracking
+    - **Market Intelligence** — live news on OSAT, fab investments, and supply chain shifts
+    - **VLSI Tutor** — step-by-step teaching of Verilog and digital electronics
+    - **Business Ops** — vendor, sourcing and semiconductor supply chain strategy analysis, with support for uploading your own CSV/Excel data for direct analysis
+    - **Learning Path** — guides complete beginners through semiconductor/VLSI fundamentals, step by step, with progress tracking
 
     Built by Rushab Oswal using free tools: Python, Gemini API, and DuckDuckGo search.
     """)
     st.link_button("View source on GitHub", "https://github.com/oswalrushab26/semiconnect-ai-agent")
 
 with tab_tracker:
-    st.subheader("?? Supply Chain Watchlist")
+    st.subheader(chr(0x1F4E6) + " Supply Chain Watchlist")
     st.write("Track specific companies and check for the latest news on demand.")
 
     if "watchlist" not in st.session_state:
         st.session_state.watchlist = []
 
     new_company = st.text_input("Add a company to track (e.g. Tata Electronics, Kaynes Semicon)")
-    if st.button("âž• Add to watchlist"):
+    if st.button(chr(0x2795) + " Add to watchlist"):
         if new_company and new_company not in st.session_state.watchlist:
             st.session_state.watchlist.append(new_company)
             st.rerun()
@@ -69,13 +69,13 @@ with tab_tracker:
     for company in st.session_state.watchlist:
         col1, col2, col3 = st.columns([3, 2, 1])
         col1.write(f"**{company}**")
-        check = col2.button("ðŸ” Check latest", key=f"check_{company}")
-        remove = col3.button("ðŸ—‘ï¸", key=f"remove_{company}")
+        check = col2.button(chr(0x1F50D) + " Check latest", key=f"check_{company}")
+        remove = col3.button(chr(0x1F5D1) + chr(0xFE0F), key=f"remove_{company}")
 
         if check:
             with st.spinner(f"Checking news for {company}..."):
                 result = web_search(f"{company} semiconductor news")
-            st.write(f"ðŸ“° {result}")
+            st.write(f"{chr(0x1F4F0)} {result}")
 
         if remove:
             st.session_state.watchlist.remove(company)
@@ -96,10 +96,10 @@ learning_topics = [
 ]
 
 mode_descriptions = {
-    "Market Intelligence": "ðŸ“Š Live OSAT, fab, and supply chain news",
-    "VLSI Tutor": "ðŸ“š Step-by-step Verilog & digital electronics",
-    "Business Ops": "ðŸ’¼ Vendor, sourcing & supply chain analysis",
-    "Learning Path": "ðŸŽ“ Zero to pro: guided semiconductor learning"
+    "Market Intelligence": chr(0x1F4CA) + " Live OSAT, fab, and supply chain news",
+    "VLSI Tutor": chr(0x1F4DA) + " Step-by-step Verilog & digital electronics",
+    "Business Ops": chr(0x1F4BC) + " Vendor, sourcing & supply chain analysis",
+    "Learning Path": chr(0x1F393) + " Zero to pro: guided semiconductor learning"
 }
 
 st.sidebar.write(mode_descriptions[mode])
@@ -107,7 +107,7 @@ st.sidebar.write(mode_descriptions[mode])
 uploaded_file = None
 if mode == "Business Ops":
     st.sidebar.divider()
-    st.sidebar.subheader("ðŸ“Ž Analyze a file")
+    st.sidebar.subheader(chr(0x1F4CE) + " Analyze a file")
     uploaded_file = st.sidebar.file_uploader("Upload vendor/supply data (CSV or Excel)", type=["csv", "xlsx"])
 
     if uploaded_file is not None:
@@ -116,11 +116,11 @@ if mode == "Business Ops":
                 df = pd.read_csv(uploaded_file)
             else:
                 df = pd.read_excel(uploaded_file)
-            st.sidebar.write(f"âœ… Loaded {len(df)} rows")
+            st.sidebar.write(f"{chr(0x2705)} Loaded {len(df)} rows")
             st.session_state.file_summary = df.describe(include="all").to_string()
             st.session_state.file_preview = df.head(10).to_string()
         except Exception:
-            st.sidebar.write("âŒ Couldn't read that file. Try a CSV or Excel file.")
+            st.sidebar.write("Couldn't read that file. Try a CSV or Excel file.")
 
 if mode == "Learning Path":
     if "learning_progress" not in st.session_state:
@@ -128,11 +128,11 @@ if mode == "Learning Path":
     st.sidebar.write("**Your progress:**")
     for i, topic in enumerate(learning_topics):
         if i < st.session_state.learning_progress:
-            st.sidebar.write(f"âœ… {topic}")
+            st.sidebar.write(f"{chr(0x2705)} {topic}")
         elif i == st.session_state.learning_progress:
-            st.sidebar.write(f"ðŸ‘‰ {topic}")
+            st.sidebar.write(f"{chr(0x1F449)} {topic}")
         else:
-            st.sidebar.write(f"â¬œ {topic}")
+            st.sidebar.write(f"{chr(0x2B1C)} {topic}")
     if st.sidebar.button("Mark current topic complete"):
         st.session_state.learning_progress = min(st.session_state.learning_progress + 1, len(learning_topics))
         st.rerun()
@@ -175,11 +175,11 @@ if "messages" not in st.session_state:
 def get_friendly_error(e):
     err = str(e)
     if "429" in err or "RESOURCE_EXHAUSTED" in err:
-        return "â³ SemiConnect is getting a lot of use right now and has hit its free-tier limit. Please try again in a few minutes, or come back tomorrow â€” thanks for your patience!"
+        return "SemiConnect is getting a lot of use right now and has hit its free-tier limit. Please try again in a few minutes, or come back tomorrow " + chr(0x2014) + " thanks for your patience!"
     elif "503" in err or "UNAVAILABLE" in err:
-        return "â³ The AI service is experiencing high demand right now. Please try again in a moment."
+        return "The AI service is experiencing high demand right now. Please try again in a moment."
     else:
-        return "âš ï¸ Something went wrong on my end. Please try rephrasing your question or try again shortly."
+        return "Something went wrong on my end. Please try rephrasing your question or try again shortly."
 
 with tab_chat:
     if len(st.session_state.messages) == 0:
@@ -244,17 +244,15 @@ with tab_chat:
 
         st.session_state.messages.append({"role": "assistant", "content": re.sub(r'\[svg\]\([^)]*\)', '', re.sub(r'\n{3,}', '\n\n', answer))})
 
-st.sidebar.divider()
-if st.sidebar.button("?? Clear conversation"):
+if st.sidebar.button(chr(0x1F5D1) + chr(0xFE0F) + " Clear conversation"):
     st.session_state.messages = []
     st.session_state.pop("chat", None)
     st.rerun()
-
+st.sidebar.subheader(chr(0x1F4AC) + " Feedback")
 st.sidebar.divider()
-st.sidebar.subheader("?? Feedback")
 st.sidebar.write("Help shape what SemiConnect becomes next:")
 st.sidebar.link_button("Share your feedback", "https://docs.google.com/forms/d/e/1FAIpQLSdsaegorN8MwUMLLjgehV7ddzwr5oTGIK6xH3BauSvz3bSGww/viewform?usp=publish-editor")
 
 st.sidebar.divider()
-st.sidebar.caption("Built with Python, Gemini API & DuckDuckGo search â€” 100% free tools")
+st.sidebar.caption("Built with Python, Gemini API & DuckDuckGo search " + chr(0x2014) + " 100% free tools")
 st.sidebar.caption("[GitHub](https://github.com/oswalrushab26/semiconnect-ai-agent)")
