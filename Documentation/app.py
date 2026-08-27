@@ -125,18 +125,37 @@ if mode == "Business Ops":
 if mode == "Learning Path":
     if "learning_progress" not in st.session_state:
         st.session_state.learning_progress = 0
+
+    completed = st.session_state.learning_progress
+    total = len(learning_topics)
+
     st.sidebar.write("**Your progress:**")
+    st.sidebar.progress(completed / total)
+    st.sidebar.caption(f"{completed} of {total} topics completed")
+
+    if completed < total:
+        current_topic = learning_topics[completed]
+        st.sidebar.info(
+            f"{chr(0x1F449)} **Current topic**\n\n{current_topic}"
+        )
+        st.sidebar.caption("Ask the VLSI Tutor about this topic to learn it step by step.")
+    else:
+        st.sidebar.success(
+            f"{chr(0x1F389)} **Learning path completed!**\n\nYou have covered all {total} topics."
+        )
+
     for i, topic in enumerate(learning_topics):
-        if i < st.session_state.learning_progress:
+        if i < completed:
             st.sidebar.write(f"{chr(0x2705)} {topic}")
-        elif i == st.session_state.learning_progress:
-            st.sidebar.write(f"{chr(0x1F449)} {topic}")
+        elif i == completed:
+            st.sidebar.write(f"{chr(0x1F449)} **{topic}**")
         else:
             st.sidebar.write(f"{chr(0x2B1C)} {topic}")
-    if st.sidebar.button("Mark current topic complete"):
-        st.session_state.learning_progress = min(st.session_state.learning_progress + 1, len(learning_topics))
-        st.rerun()
 
+    if completed < total:
+        if st.sidebar.button("Mark current topic complete"):
+            st.session_state.learning_progress = completed + 1
+            st.rerun()
 prompts = {
     "Market Intelligence": MARKET_INTEL_PROMPT,
     "VLSI Tutor": VLSI_TUTOR_PROMPT,
