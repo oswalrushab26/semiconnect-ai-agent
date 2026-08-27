@@ -95,6 +95,45 @@ learning_topics = [
     "Semiconductor industry overview: fab, OSAT, packaging"
 ]
 
+learning_objectives = {
+    "What is a semiconductor?": [
+        "Understand what a semiconductor is",
+        "Learn why silicon is commonly used",
+        "Compare conductors, insulators, and semiconductors",
+        "Understand the basic idea of doping"
+    ],
+    "Basic electronics: voltage, current, transistors": [
+        "Understand voltage, current, and resistance",
+        "Learn how a transistor works at a basic level",
+        "Understand the transistor as a switch",
+        "Connect basic electronics to digital circuits"
+    ],
+    "Digital logic: gates and boolean logic": [
+        "Understand basic logic gates",
+        "Learn Boolean expressions",
+        "Read and build truth tables",
+        "Understand how gates form digital circuits"
+    ],
+    "Sequential logic: flip-flops and memory": [
+        "Understand the difference between combinational and sequential logic",
+        "Learn how flip-flops store information",
+        "Understand registers and counters",
+        "Build intuition for clocked digital systems"
+    ],
+    "Introduction to Verilog": [
+        "Understand what Verilog is used for",
+        "Learn basic Verilog syntax",
+        "Write simple combinational and sequential RTL",
+        "Understand how RTL describes hardware"
+    ],
+    "Semiconductor industry overview: fab, OSAT, packaging": [
+        "Understand the semiconductor manufacturing flow",
+        "Learn what a fab does",
+        "Understand the role of OSAT companies",
+        "Learn the basics of semiconductor packaging"
+    ]
+}
+
 mode_descriptions = {
     "Market Intelligence": chr(0x1F4CA) + " Live OSAT, fab, and supply chain news",
     "VLSI Tutor": chr(0x1F4DA) + " Step-by-step Verilog & digital electronics",
@@ -138,6 +177,11 @@ if mode == "Learning Path":
         st.sidebar.info(
             f"{chr(0x1F449)} **Current topic**\n\n{current_topic}"
         )
+
+        st.sidebar.write("**By the end of this topic, you should understand:**")
+        for objective in learning_objectives[current_topic]:
+            st.sidebar.write(f"{chr(0x2022)} {objective}")
+
         st.sidebar.caption("Ask the VLSI Tutor about this topic to learn it step by step.")
     else:
         st.sidebar.success(
