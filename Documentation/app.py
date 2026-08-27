@@ -376,10 +376,6 @@ if mode == "Learning Path":
         else:
             st.sidebar.write(f"{chr(0x2B1C)} {topic}")
 
-    if completed < total:
-        if st.sidebar.button("Mark current topic complete"):
-            st.session_state.learning_progress = completed + 1
-            st.rerun()
 if mode == "Learning Path" and completed < total:
     current_quiz = learning_quizzes.get(current_topic, [])
 
