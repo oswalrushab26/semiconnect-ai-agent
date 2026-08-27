@@ -1,4 +1,4 @@
-import re
+﻿import re
 import streamlit as st
 from google import genai
 from google.genai import types
@@ -134,6 +134,186 @@ learning_objectives = {
     ]
 }
 
+learning_quizzes = {
+    "What is a semiconductor?": [
+        {
+            "question": "Which material is most commonly used to make semiconductor devices?",
+            "options": ["Copper", "Silicon", "Glass", "Rubber"],
+            "answer": "Silicon"
+        },
+        {
+            "question": "What is doping in a semiconductor?",
+            "options": [
+                "Adding controlled impurities",
+                "Removing all electrons",
+                "Increasing the physical size",
+                "Melting the semiconductor"
+            ],
+            "answer": "Adding controlled impurities"
+        },
+        {
+            "question": "A semiconductor has electrical conductivity that is generally:",
+            "options": [
+                "Between a conductor and an insulator",
+                "Always higher than copper",
+                "Always zero",
+                "Exactly the same as an insulator"
+            ],
+            "answer": "Between a conductor and an insulator"
+        }
+    ],
+    "Basic electronics: voltage, current, transistors": [
+        {
+            "question": "What does voltage represent?",
+            "options": [
+                "Electrical potential difference",
+                "Flow of electrons per second",
+                "Resistance to current",
+                "Physical size of a circuit"
+            ],
+            "answer": "Electrical potential difference"
+        },
+        {
+            "question": "What is a transistor commonly used for in digital circuits?",
+            "options": [
+                "As a switch",
+                "As a battery",
+                "As a wire",
+                "As a fuse only"
+            ],
+            "answer": "As a switch"
+        },
+        {
+            "question": "Which quantity represents the flow of electric charge?",
+            "options": [
+                "Voltage",
+                "Current",
+                "Resistance",
+                "Power"
+            ],
+            "answer": "Current"
+        }
+    ],
+    "Digital logic: gates and boolean logic": [
+        {
+            "question": "Which gate outputs 1 only when both inputs are 1?",
+            "options": ["OR", "AND", "XOR", "NOT"],
+            "answer": "AND"
+        },
+        {
+            "question": "Which gate produces the opposite of its input?",
+            "options": ["AND", "OR", "NOT", "XOR"],
+            "answer": "NOT"
+        },
+        {
+            "question": "A truth table is primarily used to show:",
+            "options": [
+                "Circuit behavior for input combinations",
+                "Physical chip dimensions",
+                "Transistor manufacturing cost",
+                "Clock frequency only"
+            ],
+            "answer": "Circuit behavior for input combinations"
+        }
+    ],
+    "Sequential logic: flip-flops and memory": [
+        {
+            "question": "What is the main difference between combinational and sequential logic?",
+            "options": [
+                "Sequential logic depends on previous state",
+                "Combinational logic always uses a clock",
+                "Sequential logic cannot use gates",
+                "Combinational logic stores data"
+            ],
+            "answer": "Sequential logic depends on previous state"
+        },
+        {
+            "question": "What is the primary purpose of a flip-flop?",
+            "options": [
+                "Store one bit of information",
+                "Increase voltage",
+                "Convert AC to DC",
+                "Generate analog signals"
+            ],
+            "answer": "Store one bit of information"
+        },
+        {
+            "question": "What commonly controls when synchronous sequential circuits update?",
+            "options": [
+                "Clock signal",
+                "Resistor value",
+                "Wire length",
+                "Temperature only"
+            ],
+            "answer": "Clock signal"
+        }
+    ],
+    "Introduction to Verilog": [
+        {
+            "question": "What is Verilog primarily used for?",
+            "options": [
+                "Describing and designing digital hardware",
+                "Editing photographs",
+                "Managing databases",
+                "Designing mechanical parts"
+            ],
+            "answer": "Describing and designing digital hardware"
+        },
+        {
+            "question": "What does RTL stand for?",
+            "options": [
+                "Register Transfer Level",
+                "Real Time Logic",
+                "Resistor Transfer Line",
+                "Runtime Test Language"
+            ],
+            "answer": "Register Transfer Level"
+        },
+        {
+            "question": "In Verilog, which construct is commonly used to describe combinational logic?",
+            "options": [
+                "always_comb",
+                "always_ff",
+                "initial_database",
+                "clock_only"
+            ],
+            "answer": "always_comb"
+        }
+    ],
+    "Semiconductor industry overview: fab, OSAT, packaging": [
+        {
+            "question": "What does a semiconductor fab primarily do?",
+            "options": [
+                "Manufacture semiconductor wafers",
+                "Sell finished laptops",
+                "Design websites",
+                "Transport consumer products"
+            ],
+            "answer": "Manufacture semiconductor wafers"
+        },
+        {
+            "question": "What does OSAT generally stand for?",
+            "options": [
+                "Outsourced Semiconductor Assembly and Test",
+                "Optical Semiconductor Analysis Technology",
+                "Open Silicon Assembly Tool",
+                "Operational System Architecture Team"
+            ],
+            "answer": "Outsourced Semiconductor Assembly and Test"
+        },
+        {
+            "question": "What is one major purpose of semiconductor packaging?",
+            "options": [
+                "Protect the chip and provide electrical connections",
+                "Write software onto the chip",
+                "Increase the chip's source code",
+                "Replace semiconductor manufacturing"
+            ],
+            "answer": "Protect the chip and provide electrical connections"
+        }
+    ]
+}
+
 mode_descriptions = {
     "Market Intelligence": chr(0x1F4CA) + " Live OSAT, fab, and supply chain news",
     "VLSI Tutor": chr(0x1F4DA) + " Step-by-step Verilog & digital electronics",
@@ -200,6 +380,53 @@ if mode == "Learning Path":
         if st.sidebar.button("Mark current topic complete"):
             st.session_state.learning_progress = completed + 1
             st.rerun()
+if mode == "Learning Path" and completed < total:
+    current_quiz = learning_quizzes.get(current_topic, [])
+
+    if current_quiz:
+        st.divider()
+        st.subheader(f"{chr(0x1F4DD)} Knowledge Check")
+        st.caption("Answer all questions. You need at least 2 correct answers to complete this topic.")
+
+        quiz_answers = []
+
+        for q_index, quiz in enumerate(current_quiz):
+            st.write(f"**Question {q_index + 1}:** {quiz['question']}")
+            selected = st.radio(
+                "Choose an answer:",
+                ["Select an answer..."] + quiz["options"],
+                key=f"quiz_{completed}_{q_index}"
+            )
+            quiz_answers.append(selected)
+
+        if st.button("Check answers", key=f"check_quiz_{completed}"):
+            if any(answer == "Select an answer..." for answer in quiz_answers):
+                st.warning("Please answer all questions before checking your answers.")
+            else:
+                score = sum(
+                    answer == quiz["answer"]
+                    for answer, quiz in zip(quiz_answers, current_quiz)
+                )
+                st.session_state[f"quiz_score_{completed}"] = score
+                st.rerun()
+
+        score_key = f"quiz_score_{completed}"
+        if score_key in st.session_state:
+            score = st.session_state[score_key]
+
+            if score >= 2:
+                st.success(
+                    f"{chr(0x2705)} You passed! Score: {score}/{len(current_quiz)}"
+                )
+                if st.button("Mark current topic complete", key=f"complete_topic_{completed}"):
+                    st.session_state.learning_progress = completed + 1
+                    st.session_state.pop(score_key, None)
+                    st.rerun()
+            else:
+                st.error(
+                    f"Score: {score}/{len(current_quiz)}. You need at least 2 correct answers. Review the topic and try again."
+                )
+
 prompts = {
     "Market Intelligence": MARKET_INTEL_PROMPT,
     "VLSI Tutor": VLSI_TUTOR_PROMPT,
