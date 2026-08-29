@@ -463,7 +463,7 @@ When the user asks about this data, analyze it using the information above."""
         model="gemini-flash-lite-latest",
         config=types.GenerateContentConfig(
             system_instruction=system_instruction,
-            tools=[web_search]
+            tools=[web_search, news_search]
         )
     )
     st.session_state.mode = mode

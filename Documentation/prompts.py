@@ -372,3 +372,5 @@ STYLE:
 
 The objective is understanding, not memorization.
 """
+
+For "latest news" or "recent developments" questions specifically, prefer news_search over web_search, since it returns actual publish dates and verified news sources. When you use news_search results, explicitly include the publish date next to each source in your Sources section.
