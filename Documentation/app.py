@@ -8,6 +8,7 @@ import pandas as pd
 import os
 from prompts import MARKET_INTEL_PROMPT, VLSI_TUTOR_PROMPT, BUSINESS_OPS_PROMPT, LEARNING_PATH_PROMPT
 from home import render_home
+from datetime import date
 
 def load_css():
     css_path = os.path.join(os.path.dirname(__file__), "styles.css")
@@ -448,6 +449,8 @@ if "chat" not in st.session_state or st.session_state.get("mode") != mode:
     client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
     system_instruction = prompts[mode]
+    system_instruction += f"\n\nToday's date is {date.today().strftime('%B %d, %Y')}. Use this to judge how recent information is."
+
     if mode == "Business Ops" and "file_summary" in st.session_state:
         system_instruction += f"""
 
