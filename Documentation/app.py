@@ -24,10 +24,24 @@ def web_search(query: str) -> str:
     """Searches the web and returns a summary of top results."""
     if query in _search_cache:
         return _search_cache[query]
-    results = DDGS().text(query, max_results=5)
+    results = DDGS().text(query, max_results=8)
     combined = "\n\n".join([f"Title: {r['title']}\nURL: {r['href']}\nSummary: {r['body']}" for r in results])
     _search_cache[query] = combined
     return combined
+
+def news_search(query: str) -> str:
+    """Searches recent news articles specifically, with publish dates. Use this for 'latest news' or 'recent developments' questions."""
+    cache_key = f"news:{query}"
+    if cache_key in _search_cache:
+        return _search_cache[cache_key]
+    results = DDGS().news(query, max_results=8)
+    combined = "\n\n".join([
+        f"Title: {r['title']}\nDate: {r.get('date', 'unknown')}\nSource: {r.get('source', 'unknown')}\nURL: {r['url']}\nSummary: {r['body']}"
+        for r in results
+    ])
+    _search_cache[cache_key] = combined
+    return combined
+
 
 st.set_page_config(page_title="SemiConnect", page_icon=chr(0x1F50C), layout="centered")
 load_css()
