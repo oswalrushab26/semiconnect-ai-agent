@@ -1,4 +1,5 @@
 ﻿import re
+from urllib.parse import urlparse
 import streamlit as st
 from google import genai
 from google.genai import types
@@ -21,25 +22,187 @@ if "GEMINI_API_KEY" not in os.environ and "GEMINI_API_KEY" in st.secrets:
 
 _search_cache = {}
 
+def _classify_recency(date_value: str) -> str:
+    """Classify publication recency using the article date."""
+    from datetime import datetime, timezone
+
+    if not date_value or date_value == "unknown":
+        return "UNKNOWN"
+
+    try:
+        published_at = datetime.fromisoformat(date_value.replace("Z", "+00:00"))
+    except (TypeError, ValueError):
+        return "UNKNOWN"
+
+    if published_at.tzinfo is None:
+        published_at = published_at.replace(tzinfo=timezone.utc)
+
+    now = datetime.now(timezone.utc)
+    age = now - published_at
+
+    if age.days < 0:
+        return "UNKNOWN"
+
+    if age.days == 0:
+        return "TODAY"
+
+    if age.days <= 7:
+        return "RECENT"
+
+    return "OLDER"
+
+
+def _classify_source(url: str, source: str) -> tuple[str, str]:
+    """Classify a search result using its actual hostname."""
+    try:
+        hostname = urlparse(url).hostname or ""
+    except ValueError:
+        hostname = ""
+
+    hostname = hostname.lower().removeprefix("www.")
+
+    def is_domain(domain: str) -> bool:
+        return hostname == domain or hostname.endswith("." + domain)
+
+    primary_domains = (
+        "sebi.gov.in",
+        "sec.gov",
+    )
+
+    strong_secondary_domains = (
+        "reuters.com",
+        "bloomberg.com",
+        "semiconductor-today.com",
+        "eetimes.com",
+        "tomshardware.com",
+        "anandtech.com",
+    )
+
+    secondary_domains = (
+        "techcrunch.com",
+        "theverge.com",
+        "cnbc.com",
+        "nikkei.com",
+        "ft.com",
+    )
+
+    weak_secondary_domains = (
+        "seekingalpha.com",
+        "fool.com",
+        "yahoo.com",
+    )
+
+    if hostname.endswith(".gov") or hostname.endswith(".gov.in") or any(
+        is_domain(domain) for domain in primary_domains
+    ):
+        return "PRIMARY", "GOVERNMENT_OR_OFFICIAL"
+
+    if any(is_domain(domain) for domain in strong_secondary_domains):
+        return "STRONG_SECONDARY", "NEWS_OR_INDUSTRY_MEDIA"
+
+    if any(is_domain(domain) for domain in secondary_domains):
+        return "SECONDARY", "NEWS_OR_INDUSTRY_MEDIA"
+
+    if any(is_domain(domain) for domain in weak_secondary_domains):
+        return "WEAK_SECONDARY", "FINANCIAL_COMMENTARY_OR_AGGREGATOR"
+
+    return "UNKNOWN", "UNKNOWN"
+
 def web_search(query: str) -> str:
-    """Searches the web and returns a summary of top results."""
-    if query in _search_cache:
-        return _search_cache[query]
-    results = DDGS().text(query, max_results=8)
-    combined = "\n\n".join([f"Title: {r['title']}\nURL: {r['href']}\nSummary: {r['body']}" for r in results])
-    _search_cache[query] = combined
+    """Search the web for broader semiconductor research."""
+    cache_key = f"web:{query}"
+    if cache_key in _search_cache:
+        return _search_cache[cache_key]
+
+    try:
+        results = DDGS().text(query, max_results=8)
+    except Exception:
+        results = []
+
+    seen = set()
+    selected = []
+
+    for r in results:
+        title = r.get("title", "").strip()
+        url = r.get("href", "").strip()
+        body = r.get("body", "").strip()
+
+        key = (title.lower(), url.lower())
+        if not title or not url or key in seen:
+            continue
+
+        seen.add(key)
+        selected.append(f"Title: {title}\nURL: {url}\nSummary: {body}")
+
+    combined = "\n\n".join(selected)
+    _search_cache[cache_key] = combined
     return combined
 
 def news_search(query: str) -> str:
-    """Searches recent news articles specifically, with publish dates. Use this for 'latest news' or 'recent developments' questions."""
+    """Search recent semiconductor news with dates and source information."""
     cache_key = f"news:{query}"
     if cache_key in _search_cache:
         return _search_cache[cache_key]
-    results = DDGS().news(query, max_results=8)
-    combined = "\n\n".join([
-        f"Title: {r['title']}\nDate: {r.get('date', 'unknown')}\nSource: {r.get('source', 'unknown')}\nURL: {r['url']}\nSummary: {r['body']}"
-        for r in results
-    ])
+
+    search_queries = [
+        query,
+        "semiconductor manufacturing",
+        "semiconductor foundry",
+        "semiconductor equipment",
+        "HBM memory semiconductor",
+        "AI semiconductor chips",
+        "semiconductor investment",
+    ]
+
+    results = []
+
+    for search_query in search_queries:
+        try:
+            results.extend(
+                DDGS().news(
+                    search_query,
+                    timelimit="d",
+                    max_results=5,
+                )
+            )
+        except Exception:
+            continue
+
+    seen = set()
+    selected = []
+
+    for r in results:
+        title = r.get("title", "").strip()
+        url = r.get("url", "").strip()
+        body = r.get("body", "").strip()
+        published = r.get("date", "unknown")
+        source = r.get("source", "unknown")
+        source_quality, source_type = _classify_source(url, source)
+        if source_type == "FINANCIAL_COMMENTARY_OR_AGGREGATOR":
+            continue
+
+
+        recency = _classify_recency(published)
+        key = (title.lower(), url.lower())
+
+        if not title or not url or key in seen:
+            continue
+
+        seen.add(key)
+
+        selected.append(
+            f"Title: {title}\n"
+            f"Date: {published}\n"
+            f"Source: {source}\n"
+            f"Source quality: {source_quality}\n"
+            f"Source type: {source_type}\n"
+
+            f"Recency: {recency}\n"
+            f"URL: {url}\n"
+            f"Summary: {body}"
+        )
+
+    combined = "\n\n".join(selected)
     _search_cache[cache_key] = combined
     return combined
 
