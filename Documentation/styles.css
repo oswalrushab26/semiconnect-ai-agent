@@ -1,7 +1,6 @@
-﻿/* =========================================================
-   SemiConnect AI - Global Design System
-   Step 1: Light professional foundation
-   ========================================================= */
+/* ============================================================
+   SemiConnect AI — Global Design System
+   ============================================================ */
 
 :root {
     --sc-primary: #2563eb;
@@ -24,19 +23,35 @@
     --sc-shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06);
 }
 
-/* ---------- Application ---------- */
-
-.stApp {
-    background: var(--sc-background) !important;
+html,
+body,
+.stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stApp"],
+[data-testid="stMain"],
+[data-testid="stHeader"] {
+    background-color: var(--sc-background) !important;
+    color: var(--sc-text-primary) !important;
 }
 
-.stApp,
-.stApp p,
-.stApp li,
-.stApp label,
-.stApp td,
-.stApp th {
-    color: var(--sc-text-primary);
+[data-testid="stHeader"] {
+    background-color: var(--sc-background) !important;
+}
+
+[data-testid="stToolbar"] {
+    background-color: transparent !important;
+}
+
+.main,
+.block-container {
+    background-color: var(--sc-background) !important;
+    color: var(--sc-text-primary) !important;
+}
+
+.main .block-container {
+    max-width: 1100px;
+    padding-top: 2.5rem;
+    padding-bottom: 3rem;
 }
 
 .stApp h1,
@@ -44,33 +59,47 @@
 .stApp h3,
 .stApp h4,
 .stApp h5,
-.stApp h6 {
+.stApp h6,
+[data-testid="stMarkdownContainer"] h1,
+[data-testid="stMarkdownContainer"] h2,
+[data-testid="stMarkdownContainer"] h3,
+[data-testid="stMarkdownContainer"] h4,
+[data-testid="stMarkdownContainer"] h5,
+[data-testid="stMarkdownContainer"] h6 {
     color: var(--sc-text-primary) !important;
     letter-spacing: -0.01em;
 }
 
-/* ---------- Main Content ---------- */
-
-.main .block-container {
-    max-width: 1100px;
-    padding-top: 2rem;
-    padding-bottom: 4rem;
+.stApp p,
+.stApp li,
+.stApp label,
+.stApp span,
+.stApp td,
+.stApp th,
+[data-testid="stMarkdownContainer"] {
+    color: var(--sc-text-secondary) !important;
 }
 
-/* ---------- Sidebar ---------- */
+[data-testid="stCaptionContainer"] {
+    color: var(--sc-text-muted) !important;
+}
 
-section[data-testid="stSidebar"] {
-    background: var(--sc-surface) !important;
+section[data-testid="stSidebar"],
+[data-testid="stSidebar"],
+[data-testid="stSidebarContent"] {
+    background-color: var(--sc-surface) !important;
+    color: var(--sc-text-primary) !important;
     border-right: 1px solid var(--sc-border);
 }
 
-section[data-testid="stSidebar"] p,
-section[data-testid="stSidebar"] label,
-section[data-testid="stSidebar"] span {
-    color: var(--sc-text-primary) !important;
+section[data-testid="stSidebar"] *,
+[data-testid="stSidebar"] * {
+    color: var(--sc-text-primary);
 }
 
-/* ---------- Buttons ---------- */
+section[data-testid="stSidebar"] .stButton button {
+    width: 100%;
+}
 
 .stButton button,
 .stLinkButton a {
@@ -91,12 +120,23 @@ section[data-testid="stSidebar"] span {
     color: var(--sc-text-primary) !important;
 }
 
-/* ---------- Inputs ---------- */
+[data-testid="baseButton-secondary"] {
+    background-color: var(--sc-surface) !important;
+    color: var(--sc-text-primary) !important;
+    border-color: var(--sc-border) !important;
+}
+
+[data-testid="baseButton-primary"] {
+    color: #ffffff !important;
+}
 
 .stTextInput input,
 .stTextArea textarea,
-.stChatInput input {
-    background: var(--sc-surface) !important;
+.stChatInput input,
+[data-testid="stNumberInput"] input,
+[data-testid="stSelectbox"] > div,
+[data-testid="stMultiSelect"] > div {
+    background-color: var(--sc-surface) !important;
     color: var(--sc-text-primary) !important;
     border: 1px solid var(--sc-border-strong) !important;
     border-radius: var(--sc-radius-md) !important;
@@ -109,10 +149,18 @@ section[data-testid="stSidebar"] span {
     box-shadow: 0 0 0 1px var(--sc-primary) !important;
 }
 
-/* ---------- Chat ---------- */
+[data-testid="stFileUploader"] section {
+    background-color: var(--sc-surface) !important;
+    border-color: var(--sc-border) !important;
+}
+
+[data-testid="stFileUploader"] section * {
+    color: var(--sc-text-secondary) !important;
+}
 
 .stChatMessage {
     background: var(--sc-surface) !important;
+    color: var(--sc-text-primary) !important;
     border: 1px solid var(--sc-border) !important;
     border-radius: var(--sc-radius-lg) !important;
     padding: 1rem 1.1rem !important;
@@ -148,8 +196,6 @@ section[data-testid="stSidebar"] span {
     color: var(--sc-primary) !important;
 }
 
-/* ---------- Code ---------- */
-
 .stChatMessage pre {
     background: var(--sc-surface-secondary) !important;
     border: 1px solid var(--sc-border) !important;
@@ -171,15 +217,6 @@ section[data-testid="stSidebar"] span {
     border-radius: var(--sc-radius-sm) !important;
 }
 
-/* ---------- Chat Input ---------- */
-
-.stChatInput input {
-    border-radius: var(--sc-radius-lg) !important;
-    padding: 0.75rem 1rem !important;
-}
-
-/* ---------- Tabs ---------- */
-
 .stTabs [data-baseweb="tab-list"] {
     gap: 0.25rem;
     border-bottom: 1px solid var(--sc-border);
@@ -199,29 +236,19 @@ section[data-testid="stSidebar"] span {
 
 .stTabs [aria-selected="true"] {
     background: var(--sc-surface) !important;
-    color: var(--sc-text-primary) !important;
+    color: var(--sc-primary) !important;
     border-bottom: 2px solid var(--sc-primary) !important;
 }
-
-/* ---------- Dividers ---------- */
 
 .stApp hr {
     border-color: var(--sc-border) !important;
 }
 
-/* ---------- Status / Feedback ---------- */
-
-.stAlert {
+.stAlert,
+[data-testid="stAlert"] {
     border-radius: var(--sc-radius-md) !important;
+    color: var(--sc-text-primary) !important;
 }
-
-/* ---------- Sidebar Controls ---------- */
-
-section[data-testid="stSidebar"] .stButton button {
-    width: 100%;
-}
-
-/* ---------- Responsive ---------- */
 
 @media (max-width: 768px) {
     .main .block-container {
@@ -234,139 +261,7 @@ section[data-testid="stSidebar"] .stButton button {
         padding: 0.8rem !important;
     }
 }
-/* ============================================================
-   SemiConnect AI — Light Theme Foundation
-   ============================================================ */
 
-html,
-body,
-[data-testid="stAppViewContainer"],
-[data-testid="stApp"],
-[data-testid="stMain"],
-[data-testid="stHeader"] {
-    background-color: var(--sc-background) !important;
-    color: var(--sc-text-primary) !important;
-}
-
-[data-testid="stAppViewContainer"] * {
-    color: inherit;
-}
-
-[data-testid="stHeader"] {
-    background-color: var(--sc-background) !important;
-}
-
-[data-testid="stToolbar"] {
-    background-color: transparent !important;
-}
-
-.main,
-.block-container {
-    background-color: var(--sc-background) !important;
-    color: var(--sc-text-primary) !important;
-}
-
-.block-container {
-    padding-top: 2.5rem;
-    padding-bottom: 3rem;
-}
-
-[data-testid="stSidebar"],
-[data-testid="stSidebarContent"] {
-    background-color: var(--sc-surface) !important;
-    color: var(--sc-text-primary) !important;
-}
-
-[data-testid="stSidebar"] * {
-    color: var(--sc-text-primary);
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-[data-testid="stMarkdownContainer"] h1,
-[data-testid="stMarkdownContainer"] h2,
-[data-testid="stMarkdownContainer"] h3,
-[data-testid="stMarkdownContainer"] h4,
-[data-testid="stMarkdownContainer"] h5,
-[data-testid="stMarkdownContainer"] h6 {
-    color: var(--sc-text-primary) !important;
-}
-
-p,
-li,
-label,
-span,
-[data-testid="stMarkdownContainer"],
-[data-testid="stCaptionContainer"] {
-    color: var(--sc-text-secondary) !important;
-}
-
-[data-testid="stCaptionContainer"] {
-    color: var(--sc-text-muted) !important;
-}
-
-[data-testid="stTextInput"] input,
-[data-testid="stTextArea"] textarea,
-[data-testid="stNumberInput"] input,
-[data-testid="stSelectbox"] > div,
-[data-testid="stMultiSelect"] > div {
-    background-color: var(--sc-surface) !important;
-    color: var(--sc-text-primary) !important;
-    border-color: var(--sc-border) !important;
-}
-
-[data-testid="stFileUploader"] section {
-    background-color: var(--sc-surface) !important;
-    border-color: var(--sc-border) !important;
-}
-
-[data-testid="stFileUploader"] section * {
-    color: var(--sc-text-secondary) !important;
-}
-
-button,
-[data-testid="baseButton-secondary"],
-[data-testid="baseButton-primary"] {
-    color: var(--sc-text-primary) !important;
-}
-
-[data-testid="baseButton-secondary"] {
-    background-color: var(--sc-surface) !important;
-    border-color: var(--sc-border) !important;
-}
-
-[data-testid="baseButton-primary"] {
-    color: #ffffff !important;
-}
-
-[data-testid="stTabs"] button {
-    color: var(--sc-text-secondary) !important;
-}
-
-[data-testid="stTabs"] button[aria-selected="true"] {
-    color: var(--sc-primary) !important;
-}
-
-[data-testid="stChatInput"] {
-    background-color: var(--sc-surface) !important;
-}
-
-[data-testid="stChatInput"] textarea {
-    background-color: var(--sc-surface) !important;
-    color: var(--sc-text-primary) !important;
-}
-
-[data-testid="stChatMessage"] {
-    color: var(--sc-text-primary) !important;
-}
-
-[data-testid="stAlert"] {
-    color: var(--sc-text-primary) !important;
-}
 /* ============================================================
    SemiConnect AI — Home Page
    ============================================================ */
