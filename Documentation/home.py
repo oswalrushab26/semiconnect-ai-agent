@@ -1,32 +1,62 @@
-import streamlit as st
+﻿import streamlit as st
 
 
 def render_home():
-    st.subheader("What is SemiConnect?")
+    """Render the SemiConnect AI landing page."""
 
-    st.write(
-        """
-        SemiConnect is an AI platform focused on the semiconductor ecosystem.
+    with st.container(key="home_hero"):
+        st.markdown("**SEMICONDUCTOR INTELLIGENCE**")
 
-        It brings together semiconductor market intelligence, VLSI learning,
-        and business operations support in one place.
-        """
-    )
+        st.title("SemiConnect AI")
 
-    st.markdown("### What SemiConnect offers")
+        st.subheader("Understand. Learn. Decide.")
 
-    st.markdown(
-        """
-        **📊 Market Intelligence**  
-        Track semiconductor news, OSAT activity, fab investments, and supply-chain developments.
+        st.write(
+            "AI-powered intelligence for the semiconductor industry — "
+            "from market research and VLSI learning to business analysis "
+            "and structured skill development."
+        )
 
-        **📚 VLSI Tutor**  
-        Learn digital electronics and Verilog step by step.
+    st.markdown("")
 
-        **💼 Business Operations**  
-        Analyze vendors, sourcing decisions, and semiconductor supply-chain risks.
+    with st.container(key="home_capabilities"):
+        st.markdown("### Explore SemiConnect")
 
-        **🎓 Learning Path**  
-        Follow structured learning notes, complete a test, and progress to the next topic.
-        """
-    )
+        col1, col2 = st.columns(2)
+
+        with col1:
+            with st.container(key="capability_market"):
+                st.markdown("**01 — Market Intelligence**")
+                st.write(
+                    "Track semiconductor news, fab investments, OSAT activity, "
+                    "supply-chain shifts, and industry developments."
+                )
+
+            with st.container(key="capability_business"):
+                st.markdown("**03 — Business Ops**")
+                st.write(
+                    "Analyze datasets, vendors, sourcing decisions, operational "
+                    "risks, and semiconductor business questions."
+                )
+
+        with col2:
+            with st.container(key="capability_vlsi"):
+                st.markdown("**02 — VLSI Tutor**")
+                st.write(
+                    "Learn digital electronics, Verilog, RTL concepts, verification, "
+                    "and semiconductor fundamentals step by step."
+                )
+
+            with st.container(key="capability_learning"):
+                st.markdown("**04 — Learning Path**")
+                st.write(
+                    "Follow a structured semiconductor learning journey, practice "
+                    "concepts, and build knowledge progressively."
+                )
+
+    st.markdown("")
+
+    with st.container(key="home_footer"):
+        st.caption(
+            "Built for semiconductor professionals, engineers, students, and industry teams."
+        )

@@ -1,83 +1,128 @@
-/* =========================================================
-   SemiConnect - Global Styles
+﻿/* =========================================================
+   SemiConnect AI - Global Design System
+   Step 1: Light professional foundation
    ========================================================= */
 
-/* ---------- App Background ---------- */
-
-.stApp {
-    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+:root {
+    --sc-primary: #2563eb;
+    --sc-primary-hover: #1d4ed8;
+    --sc-background: #f8fafc;
+    --sc-surface: #ffffff;
+    --sc-surface-secondary: #f1f5f9;
+    --sc-border: #e2e8f0;
+    --sc-border-strong: #cbd5e1;
+    --sc-text-primary: #172033;
+    --sc-text-secondary: #64748b;
+    --sc-text-muted: #94a3b8;
+    --sc-success: #15803d;
+    --sc-warning: #b45309;
+    --sc-error: #b91c1c;
+    --sc-radius-sm: 6px;
+    --sc-radius-md: 10px;
+    --sc-radius-lg: 14px;
+    --sc-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --sc-shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06);
 }
 
+/* ---------- Application ---------- */
 
-/* ---------- Global Text ---------- */
+.stApp {
+    background: var(--sc-background) !important;
+}
+
+.stApp,
+.stApp p,
+.stApp li,
+.stApp label,
+.stApp td,
+.stApp th {
+    color: var(--sc-text-primary);
+}
 
 .stApp h1,
 .stApp h2,
 .stApp h3,
 .stApp h4,
 .stApp h5,
-.stApp h6,
-.stApp p,
-.stApp label,
-.stApp li,
-.stApp strong,
-.stApp em,
-.stApp blockquote,
-.stApp td,
-.stApp th {
-    color: #1a1a2e !important;
+.stApp h6 {
+    color: var(--sc-text-primary) !important;
+    letter-spacing: -0.01em;
 }
 
+/* ---------- Main Content ---------- */
+
+.main .block-container {
+    max-width: 1100px;
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
 
 /* ---------- Sidebar ---------- */
 
 section[data-testid="stSidebar"] {
-    background-color: #ffffff !important;
+    background: var(--sc-surface) !important;
+    border-right: 1px solid var(--sc-border);
 }
 
+section[data-testid="stSidebar"] p,
+section[data-testid="stSidebar"] label,
+section[data-testid="stSidebar"] span {
+    color: var(--sc-text-primary) !important;
+}
 
 /* ---------- Buttons ---------- */
 
-.stButton button {
-    background-color: #f0f2f6 !important;
-    color: #1a1a2e !important;
-    border: 1px solid #d0d0d0 !important;
-    border-radius: 8px !important;
-    padding: 8px 16px !important;
+.stButton button,
+.stLinkButton a {
+    background: var(--sc-surface) !important;
+    color: var(--sc-text-primary) !important;
+    border: 1px solid var(--sc-border-strong) !important;
+    border-radius: var(--sc-radius-md) !important;
+    padding: 0.5rem 0.9rem !important;
     font-weight: 500 !important;
+    box-shadow: var(--sc-shadow-sm) !important;
+    transition: border-color 0.15s ease, background 0.15s ease;
 }
 
-.stButton button:hover {
-    background-color: #e0e2e6 !important;
-    border-color: #b0b0b0 !important;
+.stButton button:hover,
+.stLinkButton a:hover {
+    background: var(--sc-surface-secondary) !important;
+    border-color: var(--sc-primary) !important;
+    color: var(--sc-text-primary) !important;
 }
 
+/* ---------- Inputs ---------- */
 
-/* ---------- Chat Message Container ---------- */
+.stTextInput input,
+.stTextArea textarea,
+.stChatInput input {
+    background: var(--sc-surface) !important;
+    color: var(--sc-text-primary) !important;
+    border: 1px solid var(--sc-border-strong) !important;
+    border-radius: var(--sc-radius-md) !important;
+}
+
+.stTextInput input:focus,
+.stTextArea textarea:focus,
+.stChatInput input:focus {
+    border-color: var(--sc-primary) !important;
+    box-shadow: 0 0 0 1px var(--sc-primary) !important;
+}
+
+/* ---------- Chat ---------- */
 
 .stChatMessage {
-    background-color: #ffffff !important;
-    border-radius: 12px !important;
-    padding: 12px 16px !important;
-    margin: 8px 0 !important;
-    border: 1px solid #e8e8e8 !important;
+    background: var(--sc-surface) !important;
+    border: 1px solid var(--sc-border) !important;
+    border-radius: var(--sc-radius-lg) !important;
+    padding: 1rem 1.1rem !important;
+    margin: 0.65rem 0 !important;
+    box-shadow: var(--sc-shadow-sm) !important;
 }
-
-
-/* User message background */
 
 .stChatMessage:has([data-testid="chat-avatar-user"]) {
-    background-color: #f0f2f6 !important;
+    background: var(--sc-surface-secondary) !important;
 }
-
-
-/* ---------- AI Chat Markdown ---------- */
-
-/*
-   Streamlit renders the AI response as Markdown.
-   These rules force all common Markdown elements
-   to use a readable dark text color.
-*/
 
 .stChatMessage [data-testid="stMarkdownContainer"],
 .stChatMessage [data-testid="stMarkdownContainer"] p,
@@ -87,11 +132,8 @@ section[data-testid="stSidebar"] {
 .stChatMessage [data-testid="stMarkdownContainer"] blockquote,
 .stChatMessage [data-testid="stMarkdownContainer"] td,
 .stChatMessage [data-testid="stMarkdownContainer"] th {
-    color: #1a1a2e !important;
+    color: var(--sc-text-primary) !important;
 }
-
-
-/* AI response headings */
 
 .stChatMessage [data-testid="stMarkdownContainer"] h1,
 .stChatMessage [data-testid="stMarkdownContainer"] h2,
@@ -99,89 +141,333 @@ section[data-testid="stSidebar"] {
 .stChatMessage [data-testid="stMarkdownContainer"] h4,
 .stChatMessage [data-testid="stMarkdownContainer"] h5,
 .stChatMessage [data-testid="stMarkdownContainer"] h6 {
-    color: #1a1a2e !important;
+    color: var(--sc-text-primary) !important;
 }
-
-
-/* AI response bullet lists */
-
-.stChatMessage [data-testid="stMarkdownContainer"] ul,
-.stChatMessage [data-testid="stMarkdownContainer"] ol {
-    color: #1a1a2e !important;
-}
-
-
-/* AI response links */
 
 .stChatMessage [data-testid="stMarkdownContainer"] a {
-    color: #2457d6 !important;
+    color: var(--sc-primary) !important;
 }
 
-
-/* ---------- Code Blocks ---------- */
+/* ---------- Code ---------- */
 
 .stChatMessage pre {
-    background-color: #f5f5f5 !important;
-    border: 1px solid #dddddd !important;
-    border-radius: 8px !important;
-    padding: 12px 16px !important;
+    background: var(--sc-surface-secondary) !important;
+    border: 1px solid var(--sc-border) !important;
+    border-radius: var(--sc-radius-md) !important;
+    padding: 0.85rem 1rem !important;
     overflow-x: auto !important;
 }
 
 .stChatMessage pre code {
-    color: #1a1a2e !important;
-    background-color: transparent !important;
+    color: var(--sc-text-primary) !important;
+    background: transparent !important;
     font-family: Consolas, "Courier New", monospace !important;
 }
 
 .stChatMessage :not(pre) > code {
-    color: #1a1a2e !important;
-    background-color: #eef0f4 !important;
+    color: var(--sc-text-primary) !important;
+    background: var(--sc-surface-secondary) !important;
     padding: 2px 5px !important;
-    border-radius: 4px !important;
+    border-radius: var(--sc-radius-sm) !important;
 }
 
 /* ---------- Chat Input ---------- */
 
 .stChatInput input {
-    background-color: #ffffff !important;
-    border-radius: 25px !important;
-    border: 2px solid #d0d0d0 !important;
-    padding: 10px 20px !important;
-    color: #1a1a2e !important;
+    border-radius: var(--sc-radius-lg) !important;
+    padding: 0.75rem 1rem !important;
 }
-
-.stChatInput input:focus {
-    border-color: #4a6cf7 !important;
-    outline: none !important;
-    box-shadow: none !important;
-}
-
 
 /* ---------- Tabs ---------- */
 
+.stTabs [data-baseweb="tab-list"] {
+    gap: 0.25rem;
+    border-bottom: 1px solid var(--sc-border);
+}
+
 .stTabs [data-baseweb="tab"] {
-    background-color: #f0f2f5 !important;
-    border-radius: 8px 8px 0 0 !important;
-    padding: 8px 20px !important;
-    color: #555 !important;
+    background: transparent !important;
+    color: var(--sc-text-secondary) !important;
+    border-radius: var(--sc-radius-sm) var(--sc-radius-sm) 0 0 !important;
+    padding: 0.65rem 1rem !important;
+}
+
+.stTabs [data-baseweb="tab"]:hover {
+    color: var(--sc-text-primary) !important;
+    background: var(--sc-surface-secondary) !important;
 }
 
 .stTabs [aria-selected="true"] {
-    background-color: #ffffff !important;
-    color: #1a1a2e !important;
-    border-bottom: 3px solid #4a6cf7 !important;
+    background: var(--sc-surface) !important;
+    color: var(--sc-text-primary) !important;
+    border-bottom: 2px solid var(--sc-primary) !important;
 }
 
+/* ---------- Dividers ---------- */
 
-/* ---------- Sidebar Buttons ---------- */
+.stApp hr {
+    border-color: var(--sc-border) !important;
+}
+
+/* ---------- Status / Feedback ---------- */
+
+.stAlert {
+    border-radius: var(--sc-radius-md) !important;
+}
+
+/* ---------- Sidebar Controls ---------- */
 
 section[data-testid="stSidebar"] .stButton button {
-    background-color: #f0f2f6 !important;
-    color: #1a1a2e !important;
-    border: 1px solid #d0d0d0 !important;
+    width: 100%;
 }
 
-section[data-testid="stSidebar"] .stButton button:hover {
-    background-color: #e0e2e6 !important;
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+    .main .block-container {
+        padding-top: 1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .stChatMessage {
+        padding: 0.8rem !important;
+    }
 }
+/* ============================================================
+   SemiConnect AI — Light Theme Foundation
+   ============================================================ */
+
+html,
+body,
+[data-testid="stAppViewContainer"],
+[data-testid="stApp"],
+[data-testid="stMain"],
+[data-testid="stHeader"] {
+    background-color: var(--sc-background) !important;
+    color: var(--sc-text-primary) !important;
+}
+
+[data-testid="stAppViewContainer"] * {
+    color: inherit;
+}
+
+[data-testid="stHeader"] {
+    background-color: var(--sc-background) !important;
+}
+
+[data-testid="stToolbar"] {
+    background-color: transparent !important;
+}
+
+.main,
+.block-container {
+    background-color: var(--sc-background) !important;
+    color: var(--sc-text-primary) !important;
+}
+
+.block-container {
+    padding-top: 2.5rem;
+    padding-bottom: 3rem;
+}
+
+[data-testid="stSidebar"],
+[data-testid="stSidebarContent"] {
+    background-color: var(--sc-surface) !important;
+    color: var(--sc-text-primary) !important;
+}
+
+[data-testid="stSidebar"] * {
+    color: var(--sc-text-primary);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+[data-testid="stMarkdownContainer"] h1,
+[data-testid="stMarkdownContainer"] h2,
+[data-testid="stMarkdownContainer"] h3,
+[data-testid="stMarkdownContainer"] h4,
+[data-testid="stMarkdownContainer"] h5,
+[data-testid="stMarkdownContainer"] h6 {
+    color: var(--sc-text-primary) !important;
+}
+
+p,
+li,
+label,
+span,
+[data-testid="stMarkdownContainer"],
+[data-testid="stCaptionContainer"] {
+    color: var(--sc-text-secondary) !important;
+}
+
+[data-testid="stCaptionContainer"] {
+    color: var(--sc-text-muted) !important;
+}
+
+[data-testid="stTextInput"] input,
+[data-testid="stTextArea"] textarea,
+[data-testid="stNumberInput"] input,
+[data-testid="stSelectbox"] > div,
+[data-testid="stMultiSelect"] > div {
+    background-color: var(--sc-surface) !important;
+    color: var(--sc-text-primary) !important;
+    border-color: var(--sc-border) !important;
+}
+
+[data-testid="stFileUploader"] section {
+    background-color: var(--sc-surface) !important;
+    border-color: var(--sc-border) !important;
+}
+
+[data-testid="stFileUploader"] section * {
+    color: var(--sc-text-secondary) !important;
+}
+
+button,
+[data-testid="baseButton-secondary"],
+[data-testid="baseButton-primary"] {
+    color: var(--sc-text-primary) !important;
+}
+
+[data-testid="baseButton-secondary"] {
+    background-color: var(--sc-surface) !important;
+    border-color: var(--sc-border) !important;
+}
+
+[data-testid="baseButton-primary"] {
+    color: #ffffff !important;
+}
+
+[data-testid="stTabs"] button {
+    color: var(--sc-text-secondary) !important;
+}
+
+[data-testid="stTabs"] button[aria-selected="true"] {
+    color: var(--sc-primary) !important;
+}
+
+[data-testid="stChatInput"] {
+    background-color: var(--sc-surface) !important;
+}
+
+[data-testid="stChatInput"] textarea {
+    background-color: var(--sc-surface) !important;
+    color: var(--sc-text-primary) !important;
+}
+
+[data-testid="stChatMessage"] {
+    color: var(--sc-text-primary) !important;
+}
+
+[data-testid="stAlert"] {
+    color: var(--sc-text-primary) !important;
+}
+/* ============================================================
+   SemiConnect AI — Home Page
+   ============================================================ */
+
+.st-key-home_hero {
+    max-width: 820px;
+    margin: 1.5rem auto 2.5rem auto;
+}
+
+.st-key-home_hero h1 {
+    margin: 0.35rem 0 0.4rem 0;
+    font-size: 2.6rem;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+    color: var(--sc-text-primary) !important;
+}
+
+.st-key-home_hero h2 {
+    margin: 0 0 1rem 0;
+    font-size: 1.35rem;
+    font-weight: 500;
+    color: var(--sc-primary) !important;
+}
+
+.st-key-home_hero p {
+    max-width: 720px;
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--sc-text-secondary) !important;
+}
+
+.st-key-home_hero strong {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--sc-primary) !important;
+}
+
+.st-key-home_capabilities {
+    margin: 1.5rem 0 2rem 0;
+}
+
+.st-key-capability_market,
+.st-key-capability_vlsi,
+.st-key-capability_business,
+.st-key-capability_learning {
+    min-height: 145px;
+    padding: 1.25rem 1.35rem;
+    margin-bottom: 1rem;
+    background: var(--sc-surface) !important;
+    border: 1px solid var(--sc-border) !important;
+    border-radius: var(--sc-radius-md);
+    box-shadow: var(--sc-shadow-sm);
+}
+
+.st-key-capability_market:hover,
+.st-key-capability_vlsi:hover,
+.st-key-capability_business:hover,
+.st-key-capability_learning:hover {
+    border-color: var(--sc-border-strong) !important;
+    box-shadow: var(--sc-shadow-md);
+}
+
+.st-key-capability_market p,
+.st-key-capability_vlsi p,
+.st-key-capability_business p,
+.st-key-capability_learning p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--sc-text-secondary) !important;
+}
+
+.st-key-capability_market strong,
+.st-key-capability_vlsi strong,
+.st-key-capability_business strong,
+.st-key-capability_learning strong {
+    color: var(--sc-text-primary) !important;
+}
+
+.st-key-home_footer {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--sc-border);
+}
+
+@media (max-width: 768px) {
+    .st-key-home_hero {
+        margin-top: 0.75rem;
+    }
+
+    .st-key-home_hero h1 {
+        font-size: 2.1rem;
+    }
+
+    .st-key-capability_market,
+    .st-key-capability_vlsi,
+    .st-key-capability_business,
+    .st-key-capability_learning {
+        min-height: auto;
+    }
+}
+

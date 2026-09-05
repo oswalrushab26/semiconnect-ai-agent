@@ -210,25 +210,36 @@ def news_search(query: str) -> str:
 st.set_page_config(page_title="SemiConnect", page_icon=chr(0x1F50C), layout="centered")
 load_css()
 
-st.title(chr(0x1F50C) + " SemiConnect")
-st.caption("AI agent for the semiconductor industry " + chr(0x2014) + " Market Intelligence " + chr(0x00B7) + " VLSI Tutor " + chr(0x00B7) + " Business Ops " + chr(0x00B7) + " Learning Path")
+if "show_main_app" not in st.session_state:
+    st.session_state.show_main_app = False
+
+if not st.session_state.show_main_app:
+    render_home()
+
+    if st.button("Start Exploring", type="primary", use_container_width=False):
+        st.session_state.show_main_app = True
+        st.rerun()
+
+    st.stop()
+
+st.markdown("---")
 
 tab_chat, tab_tracker, tab_about = st.tabs(["\U0001F4AC Chat", "\U0001F4C8 Tracker", "\u2139\uFE0F About"])
 
 with tab_about:
-    render_home()
+    st.subheader("About SemiConnect AI")
     st.write("""
-    SemiConnect is an AI agent built for the semiconductor industry, with four specialist modes:
+SemiConnect AI is an AI platform built for the semiconductor industry.
 
-    - **Market Intelligence** — live news on OSAT, fab investments, and supply chain shifts
-    - **VLSI Tutor** — step-by-step teaching of Verilog and digital electronics
-    - **Business Ops** — vendor, sourcing and semiconductor supply chain strategy analysis, with support for uploading your own CSV/Excel data for direct analysis
-    - **Learning Path** — guides complete beginners through semiconductor/VLSI fundamentals, step by step, with progress tracking
+It brings together market intelligence, VLSI learning, business operations analysis,
+and structured semiconductor skill development in one place.
 
-    Built by Rushab Oswal using free tools: Python, Gemini API, and DuckDuckGo search.
-    """)
-    st.link_button("View source on GitHub", "https://github.com/oswalrushab26/semiconnect-ai-agent")
-
+Built by Rushab Oswal using Python, Gemini API, and DuckDuckGo search.
+""")
+    st.link_button(
+        "View source on GitHub",
+        "https://github.com/oswalrushab26/semiconnect-ai-agent"
+    )
 with tab_tracker:
     st.subheader(chr(0x1F4E6) + " Supply Chain Watchlist")
     st.write("Track specific companies and check for the latest news on demand.")
@@ -722,3 +733,5 @@ st.sidebar.link_button("Share your feedback", "https://docs.google.com/forms/d/e
 st.sidebar.divider()
 st.sidebar.caption("Built with Python, Gemini API & DuckDuckGo search " + chr(0x2014) + " 100% free tools")
 st.sidebar.caption("[GitHub](https://github.com/oswalrushab26/semiconnect-ai-agent)")
+
+
