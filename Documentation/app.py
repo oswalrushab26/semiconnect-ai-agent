@@ -216,10 +216,6 @@ if "show_main_app" not in st.session_state:
 if not st.session_state.show_main_app:
     render_home()
 
-    if st.button("Start Exploring", type="primary", use_container_width=False):
-        st.session_state.show_main_app = True
-        st.rerun()
-
     st.stop()
 
 st.markdown("---")
@@ -272,7 +268,22 @@ with tab_tracker:
 
 st.sidebar.header("SemiConnect")
 st.sidebar.write("Built by Rushab Oswal")
-mode = st.sidebar.radio("Choose a mode:", ["Market Intelligence", "VLSI Tutor", "Business Ops", "Learning Path"])
+if "home_selected_mode" in st.session_state:
+    _home_mode = st.session_state.home_selected_mode
+    _mode_index = [
+        "Market Intelligence",
+        "VLSI Tutor",
+        "Business Ops",
+        "Learning Path",
+    ].index(_home_mode)
+else:
+    _mode_index = 0
+
+mode = st.sidebar.radio(
+    "Choose a mode:",
+    ["Market Intelligence", "VLSI Tutor", "Business Ops", "Learning Path"],
+    index=_mode_index,
+)
 st.sidebar.divider()
 
 learning_topics = [

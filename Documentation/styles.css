@@ -471,3 +471,222 @@ button,
     }
 }
 
+/* ============================================================
+   SemiConnect AI ? Home v3 refinement
+   ============================================================ */
+
+.st-key-home_value_strip {
+    margin: 0.35rem 0 2rem 0;
+    padding: 0.9rem 0;
+    border-top: 1px solid var(--sc-border);
+    border-bottom: 1px solid var(--sc-border);
+}
+
+.st-key-home_value_strip [data-testid="column"] {
+    padding: 0 0.75rem;
+}
+
+.st-key-home_value_strip [data-testid="column"] + [data-testid="column"] {
+    border-left: 1px solid var(--sc-border);
+}
+
+.st-key-home_value_strip p {
+    margin: 0;
+}
+
+.st-key-home_value_strip strong {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    color: var(--sc-primary) !important;
+}
+
+.st-key-home_value_strip .stCaption {
+    font-size: 0.78rem;
+    margin-top: 0.15rem;
+}
+
+.st-key-capability_market > div:first-child strong,
+.st-key-capability_vlsi > div:first-child strong,
+.st-key-capability_business > div:first-child strong,
+.st-key-capability_learning > div:first-child strong {
+    color: var(--sc-primary) !important;
+    letter-spacing: 0.08em;
+}
+
+.st-key-home_cta {
+    display: flex;
+    justify-content: center;
+    margin: 0.15rem 0 1.75rem 0;
+}
+
+.st-key-home_cta .stButton > button {
+    min-width: 205px;
+    min-height: 48px;
+    padding: 0.72rem 1.5rem;
+    border-radius: var(--sc-radius-md);
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    box-shadow: var(--sc-shadow-md);
+}
+
+.st-key-home_cta .stButton > button:hover {
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.14);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .st-key-home_value_strip {
+        padding: 0.5rem 0;
+    }
+
+    .st-key-home_value_strip [data-testid="column"] {
+        padding: 0.45rem 0;
+    }
+
+    .st-key-home_value_strip [data-testid="column"] + [data-testid="column"] {
+        border-left: 0;
+    }
+
+    .st-key-home_cta {
+        margin-bottom: 2rem;
+    }
+
+    .st-key-home_cta .stButton > button {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+
+/* ============================================================
+   Home v4 ? Interactive Capability Explorer
+   ============================================================ */
+
+.st-key-home_explorer {
+    margin: 0.5rem 0 1.5rem 0;
+    padding: 1.25rem 1.35rem 1.35rem 1.35rem;
+    background: var(--sc-surface);
+    border: 1px solid var(--sc-border);
+    border-radius: var(--sc-radius-lg);
+    box-shadow: var(--sc-shadow-sm);
+}
+
+.st-key-home_explorer [data-testid="stRadio"] > label {
+    display: none;
+}
+
+.st-key-home_explorer [role="radiogroup"] {
+    gap: 0.4rem;
+}
+
+.st-key-home_explorer [role="radio"] {
+    border: 1px solid var(--sc-border);
+    border-radius: var(--sc-radius-md);
+    padding: 0.55rem 0.8rem;
+    background: var(--sc-surface-secondary);
+}
+
+.st-key-home_explorer [role="radio"][aria-checked="true"] {
+    border-color: var(--sc-primary);
+    background: var(--sc-surface);
+}
+
+.st-key-home_mode_preview {
+    margin-top: 1rem;
+    padding: 1rem 1.1rem;
+    border-top: 1px solid var(--sc-border);
+}
+
+.st-key-home_mode_preview strong {
+    color: var(--sc-primary) !important;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+}
+
+.st-key-home_mode_preview h4 {
+    margin-top: 0.35rem;
+    margin-bottom: 0.45rem;
+}
+
+.st-key-home_mode_preview p {
+    color: var(--sc-text-secondary) !important;
+}
+
+.st-key-home_cta {
+    display: flex;
+    justify-content: center;
+    margin: 0.75rem 0 2.75rem 0;
+}
+
+.st-key-home_cta .stButton > button {
+    min-width: 220px;
+    min-height: 48px;
+    padding: 0.72rem 1.5rem;
+    border-radius: var(--sc-radius-md);
+    font-weight: 650;
+}
+
+@media (max-width: 768px) {
+    .st-key-home_explorer [role="radiogroup"] {
+        flex-direction: column;
+    }
+
+    .st-key-home_cta .stButton > button {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+
+/* ============================================================
+   Home v4 ? Final CTA / Footer hierarchy
+   ============================================================ */
+
+.st-key-home_cta {
+    display: flex;
+    justify-content: center;
+    margin: 0.55rem 0 2rem 0;
+}
+
+.st-key-home_cta .stButton {
+    display: flex;
+    justify-content: center;
+}
+
+.st-key-home_cta .stButton > button {
+    min-width: 230px;
+    min-height: 50px;
+    padding: 0.78rem 1.7rem;
+    border-radius: var(--sc-radius-md);
+    font-weight: 700;
+    font-size: 0.98rem;
+    box-shadow: var(--sc-shadow-sm);
+}
+
+.st-key-home_cta .stButton > button:hover {
+    box-shadow: var(--sc-shadow-md);
+    transform: translateY(-1px);
+}
+
+.st-key-home_footer {
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--sc-border);
+    text-align: center;
+}
+
+.st-key-home_footer p {
+    color: var(--sc-text-muted) !important;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+    .st-key-home_cta {
+        margin: 0.4rem 0 1.75rem 0;
+    }
+
+    .st-key-home_cta .stButton > button {
+        width: 100%;
+        min-width: 0;
+    }
+}
